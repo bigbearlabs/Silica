@@ -125,4 +125,7 @@
  *  @return The pid of the process that owns the accessibility element.
  */
 - (pid_t)processIdentifier;
+
+-(SIAccessibilityElement*) focusedElement;
+
 @end

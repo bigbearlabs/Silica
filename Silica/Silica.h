@@ -18,3 +18,7 @@
 #import <Silica/SISystemWideElement.h>
 #import <Silica/SIUniversalAccessHelper.h>
 #import <Silica/SIWindow.h>
+
+
+// make workaround class public.
+#import "BBLAccessibilityWindowWatcher.h"

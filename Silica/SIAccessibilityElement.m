@@ -5,6 +5,9 @@
 
 #import "SIAccessibilityElement.h"
 
+#import "SISystemWideElement.h"
+
+
 @interface SIAccessibilityElement ()
 @property (nonatomic, assign) AXUIElementRef axElementRef;
 @end
@@ -213,6 +216,20 @@
     if (error != kAXErrorSuccess) return -1;
     
     return processIdentifier;
+}
+
+
+-(SIAccessibilityElement*) focusedElement {
+  AXUIElementRef result=NULL;
+  AXUIElementCopyAttributeValue([SISystemWideElement systemWideElement].axElementRef, kAXFocusedUIElementAttribute, (CFTypeRef *)&result);
+  if (result) {
+    id elem = [[SIAccessibilityElement alloc] initWithAXElement:result];
+    CFRelease(result);
+    return elem;
+  } else {
+    NSLog(@"no focused element...");
+    return nil;
+  }
 }
 
 @end

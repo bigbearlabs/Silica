@@ -39,6 +39,12 @@
 }
 
 -(void) watchNotificationsForApp:(SIApplication*)application {
+  [application observeNotification:kAXApplicationActivatedNotification
+                       withElement:application
+                           handler:^(SIAccessibilityElement *accessibilityElement) {
+                             [self onApplicationActivated:accessibilityElement];
+                           }];
+  
   [application observeNotification:kAXFocusedWindowChangedNotification
                        withElement:application
                            handler:^(SIAccessibilityElement *accessibilityElement) {
@@ -51,11 +57,20 @@
                              [self onWindowCreated:(SIWindow*)accessibilityElement];
                            }];
   
-  [application observeNotification:kAXApplicationActivatedNotification
+  [application observeNotification:kAXTitleChangedNotification
                        withElement:application
                            handler:^(SIAccessibilityElement *accessibilityElement) {
-                             [self onApplicationActivated:accessibilityElement];
+                             [self onTitleChanged:accessibilityElement];
                            }];
+
+  // ABORT we ended up with far too many notifs when using this.
+  //  [application observeNotification:kAXFocusedUIElementChangedNotification
+  //                       withElement:application
+  //                           handler:^(SIAccessibilityElement *accessibilityElement) {
+  //                             [self onFocusedElementChanged:accessibilityElement];
+  //                           }];
+  
+
   
   if (!watchedApps) {
     watchedApps = [@[] mutableCopy];
@@ -67,20 +82,32 @@
   [application unobserveNotification:kAXFocusedWindowChangedNotification withElement:application];
   [application unobserveNotification:kAXWindowCreatedNotification withElement:application];
   [application unobserveNotification:kAXApplicationActivatedNotification withElement:application];
+  [application unobserveNotification:kAXTitleChangedNotification withElement:application];
 }
 
 
+#pragma mark - handlers
+
+-(void) onApplicationActivated:(SIAccessibilityElement*)element {
+  NSLog(@"app activated: %@", element);
+}
+
 -(void) onFocusedWindowChanged:(SIWindow*)window {
-  NSLog(@"%@ in focus.", window);
+  NSLog(@"focus: %@", window);
 }
 
 -(void) onWindowCreated:(SIWindow*)window {
   NSLog(@"new window: %@",window.title);  // NOTE title may not be available yet.
 }
 
--(void) onApplicationActivated:(SIAccessibilityElement*)element {
-  
+-(void) onTitleChanged:(SIAccessibilityElement*)element {
+  NSLog(@"title changed: %@", element);
 }
+
+//-(void) onFocusedElementChanged:(SIAccessibilityElement*)element {
+//  NSLog(@"focused element: %@", element.focusedElement);
+//}
+//
 
 @end
 
