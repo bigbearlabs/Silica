@@ -34,7 +34,8 @@
   // for all current apps, observe.
   for (SIApplication* application in [SIApplication runningApplications]) {
     // some exclusions to avoid performance penalty
-    if ([application.title isEqualToString:@"com.apple.WebKit.WebContent"] ) {
+    if ([self isExcluded:application]) {
+
     }
     else {
       [self concurrently:^{
@@ -49,6 +50,24 @@
   
   // NOTE it still takes a while for the notifs to actually invoke the handlers. at least with concurrent set up we don't hog the main thread as badly as before.
 }
+
+-(void) unwatchWindows {
+  // naive impl that loops through the running apps
+
+  for (SIApplication* app in [SIApplication runningApplications]) {
+    if ([self isExcluded:app]) {
+
+    } else {
+      [self unwatchApp:app];
+    }
+  }
+}
+
+// subclasses should override this.
+-(BOOL) isExcluded:(SIApplication*) application {
+  return NO;
+}
+  
 
 -(void) watchNotificationsForApp:(SIApplication*)application {
   [application observeNotification:kAXApplicationActivatedNotification
