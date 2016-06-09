@@ -33,9 +33,21 @@
   
   // for all current apps, observe.
   for (SIApplication* application in [SIApplication runningApplications]) {
-    [self watchNotificationsForApp:application];
+    // some exclusions to avoid performance penalty
+    if ([application.title isEqualToString:@"com.apple.WebKit.WebContent"] ) {
+    }
+    else {
+      [self concurrently:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [self watchNotificationsForApp:application];
+        });
+      }];
+    }
   }
   
+  NSLog(@"%@ is watching the windows", self);
+  
+  // NOTE it still takes a while for the notifs to actually invoke the handlers. at least with concurrent set up we don't hog the main thread as badly as before.
 }
 
 -(void) watchNotificationsForApp:(SIApplication*)application {
@@ -76,6 +88,8 @@
     watchedApps = [@[] mutableCopy];
   }
   [watchedApps addObject:application];
+  
+  NSLog(@"setup observers for %@", application);
 }
 
 -(void) unwatchApp:(SIApplication*)application {
@@ -85,6 +99,12 @@
   [application unobserveNotification:kAXTitleChangedNotification withElement:application];
 }
 
+
+-(void) concurrently:(void(^)(void))block {
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+    block();
+  });
+}
 
 #pragma mark - handlers
 
