@@ -61,7 +61,7 @@
 -(void) watchNotificationsForApp:(SIApplication*)application {
   id shouldObserve = [self shouldObserve:application];
   if (shouldObserve) {
-    NSLog(@"should observe %@: %@", application, shouldObserve);
+    // NSLog(@"should observe %@: %@", application, shouldObserve);
     [self concurrently:^{
       dispatch_async(dispatch_get_main_queue(), ^{
         [application observeNotification:kAXApplicationActivatedNotification
