@@ -14,9 +14,12 @@
   NSMutableArray* watchedApps;
 }
 
+-(NSArray*) applicationsToObserve {
+  return [[NSWorkspace sharedWorkspace] runningApplications];
+}
 
 -(void) watchWindows {
-  // on didlaunchapplication notif, observe..
+  // on didlaunchapplication notif, observe.
   [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidLaunchApplicationNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
     
     NSRunningApplication* app = (NSRunningApplication*) note.userInfo[NSWorkspaceApplicationKey];
@@ -32,9 +35,9 @@
   }];
   
   // for all current apps, observe.
-  for (SIApplication* application in [SIApplication runningApplications]) {
-    // some exclusions to avoid performance penalty
-    [self watchNotificationsForApp:application];
+  for (NSRunningApplication* application in [self applicationsToObserve]) {
+    id app = [SIApplication applicationWithRunningApplication:application];
+    [self watchNotificationsForApp:app];
   }
   
   NSLog(@"%@ is watching the windows", self);
@@ -45,76 +48,65 @@
 -(void) unwatchWindows {
   // naive impl that loops through the running apps
 
-  for (SIApplication* app in [SIApplication runningApplications]) {
+  for (id application in [self applicationsToObserve]) {
+    id app = [SIApplication applicationWithRunningApplication:application];
     [self unwatchApp:app];
+    // FIXME this contends with the unobservation on app terminate.
   }
 }
 
-// subclasses should override this.
-// HACK work around RM failure to reliably pass BOOL values.
--(id) shouldObserve:(SIApplication*) application {
-  // @throw [NSException exceptionWithName:@"abstract-method" reason:nil userInfo:nil];
-  return [NSObject new];
-}
-  
 
 -(void) watchNotificationsForApp:(SIApplication*)application {
-  id shouldObserve = [self shouldObserve:application];
-  if (shouldObserve) {
-    // NSLog(@"should observe %@: %@", application, shouldObserve);
-    [self concurrently:^{
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [application observeNotification:kAXApplicationActivatedNotification
-                             withElement:application
-                                 handler:^(SIAccessibilityElement *accessibilityElement) {
-                                   [self onApplicationActivated:accessibilityElement];
-                                 }];
-        
-        [application observeNotification:kAXFocusedWindowChangedNotification
-                             withElement:application
-                                 handler:^(SIAccessibilityElement *accessibilityElement) {
-                                   [self onFocusedWindowChanged:(SIWindow*)accessibilityElement];
-                                 }];
-        
-        [application observeNotification:kAXWindowCreatedNotification
-                             withElement:application
-                                 handler:^(SIAccessibilityElement *accessibilityElement) {
-                                   [self onWindowCreated:(SIWindow*)accessibilityElement];
-                                 }];
-        
-        [application observeNotification:kAXTitleChangedNotification
-                             withElement:application
-                                 handler:^(SIAccessibilityElement *accessibilityElement) {
-                                   [self onTitleChanged:accessibilityElement];
-                                 }];
+  [self concurrently:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [application observeNotification:kAXApplicationActivatedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onApplicationActivated:accessibilityElement];
+                               }];
+      
+      [application observeNotification:kAXFocusedWindowChangedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onFocusedWindowChanged:(SIWindow*)accessibilityElement];
+                               }];
+      
+      [application observeNotification:kAXWindowCreatedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onWindowCreated:(SIWindow*)accessibilityElement];
+                               }];
+      
+      [application observeNotification:kAXTitleChangedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onTitleChanged:accessibilityElement];
+                               }];
 
-        // ABORT we ended up with far too many notifs when using this.
-        //  [application observeNotification:kAXFocusedUIElementChangedNotification
-        //                       withElement:application
-        //                           handler:^(SIAccessibilityElement *accessibilityElement) {
-        //                             [self onFocusedElementChanged:accessibilityElement];
-        //                           }];
-        
+      // ABORT we ended up with far too many notifs when using this.
+      //  [application observeNotification:kAXFocusedUIElementChangedNotification
+      //                       withElement:application
+      //                           handler:^(SIAccessibilityElement *accessibilityElement) {
+      //                             [self onFocusedElementChanged:accessibilityElement];
+      //                           }];
+      
 
-        
-        if (!watchedApps) {
-          watchedApps = [@[] mutableCopy];
-        }
-        [watchedApps addObject:application];
-        
-        NSLog(@"setup observers for %@", application);
-      });
-    }];
-  }
+      
+      if (!watchedApps) {
+        watchedApps = [@[] mutableCopy];
+      }
+      [watchedApps addObject:application];
+      
+      NSLog(@"setup observers for %@", application);
+    });
+  }];
 }
 
 -(void) unwatchApp:(SIApplication*)application {
-  if ([self shouldObserve:application]) {
-    [application unobserveNotification:kAXFocusedWindowChangedNotification withElement:application];
-    [application unobserveNotification:kAXWindowCreatedNotification withElement:application];
-    [application unobserveNotification:kAXApplicationActivatedNotification withElement:application];
-    [application unobserveNotification:kAXTitleChangedNotification withElement:application];
-  }
+  [application unobserveNotification:kAXFocusedWindowChangedNotification withElement:application];
+  [application unobserveNotification:kAXWindowCreatedNotification withElement:application];
+  [application unobserveNotification:kAXApplicationActivatedNotification withElement:application];
+  [application unobserveNotification:kAXTitleChangedNotification withElement:application];
 }
 
 
