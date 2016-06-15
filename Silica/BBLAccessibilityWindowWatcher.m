@@ -14,30 +14,49 @@
   NSMutableArray* watchedApps;
 }
 
+// return non-primitive type to work around RM interface botch.
+-(NSNumber*) isExcludedApp:(NSRunningApplication*) application {
+  return nil;
+}
+
 -(NSArray*) applicationsToObserve {
   return [[NSWorkspace sharedWorkspace] runningApplications];
 }
+
 
 -(void) watchWindows {
   // on didlaunchapplication notif, observe.
   [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidLaunchApplicationNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
     
     NSRunningApplication* app = (NSRunningApplication*) note.userInfo[NSWorkspaceApplicationKey];
-    SIApplication* application = [SIApplication applicationWithRunningApplication:app];
-    [self watchNotificationsForApp:application];
+    if (![self isExcludedApp:app]) {
+      SIApplication* application = [SIApplication applicationWithRunningApplication:app];
+      [self watchNotificationsForApp:application];
+    } else {
+      NSLog(@"%@ is excluded from observation", app);
+    }
   }];
   
   // on terminateapplication notif, unobserve.
   [[[NSWorkspace sharedWorkspace] notificationCenter] addObserverForName:NSWorkspaceDidTerminateApplicationNotification object:nil queue:nil usingBlock:^(NSNotification * _Nonnull note) {
     NSRunningApplication* app = (NSRunningApplication*) note.userInfo[NSWorkspaceApplicationKey];
-    SIApplication* application = [SIApplication applicationWithRunningApplication:app];
-    [self unwatchApp:application];
+    if (![self isExcludedApp:app]) {
+      SIApplication* application = [SIApplication applicationWithRunningApplication:app];
+      [self unwatchApp:application];
+    } else {
+      NSLog(@"%@ is excluded from observation", app);
+    }
   }];
   
   // for all current apps, observe.
   for (NSRunningApplication* application in [self applicationsToObserve]) {
-    id app = [SIApplication applicationWithRunningApplication:application];
-    [self watchNotificationsForApp:app];
+    if (![self isExcludedApp:application]) {
+      id app = [SIApplication applicationWithRunningApplication:application];
+      [self watchNotificationsForApp:app];
+    } else {
+      NSLog(@"%@ is excluded from observation", application);
+    }
+
   }
   
   NSLog(@"%@ is watching the windows", self);
