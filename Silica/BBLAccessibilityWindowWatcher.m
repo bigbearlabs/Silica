@@ -102,6 +102,31 @@
                                  [self onTitleChanged:accessibilityElement];
                                }];
 
+      [application observeNotification:kAXWindowMiniaturizedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onWindowMinimised:accessibilityElement];
+                               }];
+      
+      [application observeNotification:kAXWindowDeminiaturizedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onWindowUnminimised:accessibilityElement];
+                               }];
+      
+      [application observeNotification:kAXWindowMovedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onWindowMoved:accessibilityElement];
+                               }];
+      
+      [application observeNotification:kAXWindowResizedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onWindowResized:accessibilityElement];
+                               }];
+      
+
       // ABORT we ended up with far too many notifs when using this.
       //  [application observeNotification:kAXFocusedUIElementChangedNotification
       //                       withElement:application
@@ -138,7 +163,9 @@
 #pragma mark - handlers
 
 -(void) onApplicationActivated:(SIAccessibilityElement*)element {
-  NSLog(@"app activated: %@", element);
+  // work around silica treatment of this event parameter as a SIWindow, when it should be an SIApplication
+  id app = [element valueForKey:@"app"];
+  NSLog(@"app activated: %@", app);
 }
 
 -(void) onFocusedWindowChanged:(SIWindow*)window {
@@ -153,10 +180,34 @@
   NSLog(@"title changed: %@", element);
 }
 
+-(void) onWindowMinimised:(SIWindow*)window {
+  NSLog(@"window minimised: %@",window.title);  // NOTE title may not be available yet.
+}
+
+-(void) onWindowUnminimised:(SIWindow*)window {
+  NSLog(@"window unminimised: %@",window.title);  // NOTE title may not be available yet.
+}
+
+-(void) onWindowMoved:(SIWindow*)window {
+  NSLog(@"window moved: %@",window.title);  // NOTE title may not be available yet.
+}
+
+-(void) onWindowResized:(SIWindow*)window {
+  NSLog(@"window resized: %@",window.title);  // NOTE title may not be available yet.
+}
+
+
 //-(void) onFocusedElementChanged:(SIAccessibilityElement*)element {
 //  NSLog(@"focused element: %@", element.focusedElement);
 //}
 //
+
+
+#pragma mark - util
+
+-(SIWindow*) keyWindowForApplication:(SIApplication*) application {
+  return application.visibleWindows[0];
+}
 
 @end
 

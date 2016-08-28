@@ -23,4 +23,16 @@
 
 -(void) onApplicationActivated:(SIAccessibilityElement*)element;
 
+
+-(void) onWindowMinimised:(SIWindow*)window;
+
+-(void) onWindowUnminimised:(SIWindow*)window;
+
+-(void) onWindowMoved:(SIWindow*)window;
+
+-(void) onWindowResized:(SIWindow*)window;
+
+
+-(SIWindow*) keyWindowForApplication:(SIApplication*) application;
+
 @end
