@@ -84,6 +84,8 @@
                                  [self onApplicationActivated:accessibilityElement];
                                }];
       
+      // TODO respond to kAXApplicationDeactivatedNotification since impl needs to hide overlay for improved responsiveness.
+      
       [application observeNotification:kAXFocusedWindowChangedNotification
                            withElement:application
                                handler:^(SIAccessibilityElement *accessibilityElement) {
