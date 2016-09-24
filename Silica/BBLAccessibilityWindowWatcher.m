@@ -206,7 +206,12 @@
 #pragma mark - util
 
 -(SIWindow*) keyWindowForApplication:(SIApplication*) application {
-  return application.visibleWindows[0];
+  for (SIWindow* window in application.visibleWindows) {
+    if (![window isSheet]) 
+      return window;
+  }
+
+  @throw [NSException exceptionWithName:@"invalid-state" reason:@"no suitable window to return as key" userInfo:nil];
 }
 
 @end
