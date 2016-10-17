@@ -107,25 +107,25 @@
       [application observeNotification:kAXWindowMiniaturizedNotification
                            withElement:application
                                handler:^(SIAccessibilityElement *accessibilityElement) {
-                                 [self onWindowMinimised:accessibilityElement];
+                                 [self onWindowMinimised:(SIWindow*)accessibilityElement];
                                }];
       
       [application observeNotification:kAXWindowDeminiaturizedNotification
                            withElement:application
                                handler:^(SIAccessibilityElement *accessibilityElement) {
-                                 [self onWindowUnminimised:accessibilityElement];
+                                 [self onWindowUnminimised:(SIWindow*)accessibilityElement];
                                }];
       
       [application observeNotification:kAXWindowMovedNotification
                            withElement:application
                                handler:^(SIAccessibilityElement *accessibilityElement) {
-                                 [self onWindowMoved:accessibilityElement];
+                                 [self onWindowMoved:(SIWindow*)accessibilityElement];
                                }];
       
       [application observeNotification:kAXWindowResizedNotification
                            withElement:application
                                handler:^(SIAccessibilityElement *accessibilityElement) {
-                                 [self onWindowResized:accessibilityElement];
+                                 [self onWindowResized:(SIWindow*)accessibilityElement];
                                }];
       
 
