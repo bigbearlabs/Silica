@@ -7,7 +7,7 @@
 //
 
 #import "BBLAccessibilityWindowWatcher.h"
-
+//#import <NMAccessibility/NMAccessibility.h>
 
 @implementation BBLAccessibilityWindowWatcher
 {
@@ -137,6 +137,14 @@
       //                           }];
       
 
+      // observe appropriately for text selection handling.
+      [application observeNotification:kAXSelectedTextChangedNotification
+                           withElement:application
+                               handler:^(SIAccessibilityElement *accessibilityElement) {
+                                 [self onTextSelectionChanged:accessibilityElement];
+                               }];
+      
+
       
       if (!watchedApps) {
         watchedApps = [@[] mutableCopy];
@@ -149,10 +157,15 @@
 }
 
 -(void) unwatchApp:(SIApplication*)application {
-  [application unobserveNotification:kAXFocusedWindowChangedNotification withElement:application];
-  [application unobserveNotification:kAXWindowCreatedNotification withElement:application];
-  [application unobserveNotification:kAXApplicationActivatedNotification withElement:application];
+  [application unobserveNotification:kAXSelectedTextChangedNotification withElement:application];
+  [application unobserveNotification:kAXWindowResizedNotification withElement:application];
+  [application unobserveNotification:kAXWindowMovedNotification withElement:application];
+  [application unobserveNotification:kAXWindowDeminiaturizedNotification withElement:application];
+  [application unobserveNotification:kAXWindowMiniaturizedNotification withElement:application];
   [application unobserveNotification:kAXTitleChangedNotification withElement:application];
+  [application unobserveNotification:kAXWindowCreatedNotification withElement:application];
+  [application unobserveNotification:kAXFocusedWindowChangedNotification withElement:application];
+  [application unobserveNotification:kAXApplicationActivatedNotification withElement:application];
 }
 
 
@@ -198,11 +211,15 @@
   NSLog(@"window resized: %@",window.title);  // NOTE title may not be available yet.
 }
 
+-(void) onTextSelectionChanged:(SIAccessibilityElement*)element {
+//  NMUIElement* nmElement = [[NMUIElement alloc] initWithElement:element.axElementRef];
+//  id selection = [nmElement selectedText];
+//  NSLog(@"text selection: %@", selection);
+//  DISABLED depends on NMAccessibility.
+  
+  NSLog(@"selected text changed on element %@", element);
+}
 
-//-(void) onFocusedElementChanged:(SIAccessibilityElement*)element {
-//  NSLog(@"focused element: %@", element.focusedElement);
-//}
-//
 
 
 #pragma mark - util
