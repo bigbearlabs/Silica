@@ -18,8 +18,6 @@
 		40FC6AD417FA606A00856CE7 /* NSRunningApplication+Silica.h in Headers */ = {isa = PBXBuildFile; fileRef = 40FC6AD217FA606A00856CE7 /* NSRunningApplication+Silica.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		40FC6AD517FA606A00856CE7 /* NSRunningApplication+Silica.m in Sources */ = {isa = PBXBuildFile; fileRef = 40FC6AD317FA606A00856CE7 /* NSRunningApplication+Silica.m */; };
 		5109F3C71CC16EDC007E1D13 /* Silica.h in Headers */ = {isa = PBXBuildFile; fileRef = 942474C517DF67D700BF9B61 /* Silica.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5109F3FD1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 5109F3FB1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5109F3FE1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 5109F3FC1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.m */; };
 		51B8F21F1DB5097100E79EEC /* NMAccessibility.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51B8F21E1DB5097100E79EEC /* NMAccessibility.framework */; };
 		942474B917DF67D700BF9B61 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942474B817DF67D700BF9B61 /* Cocoa.framework */; };
 		942474C317DF67D700BF9B61 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 942474C117DF67D700BF9B61 /* InfoPlist.strings */; };
@@ -43,8 +41,6 @@
 		40FC6ACF17FA5A1B00856CE7 /* SIAccessibilityElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SIAccessibilityElement.m; sourceTree = "<group>"; };
 		40FC6AD217FA606A00856CE7 /* NSRunningApplication+Silica.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunningApplication+Silica.h"; sourceTree = "<group>"; };
 		40FC6AD317FA606A00856CE7 /* NSRunningApplication+Silica.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunningApplication+Silica.m"; sourceTree = "<group>"; };
-		5109F3FB1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBLAccessibilityWindowWatcher.h; sourceTree = "<group>"; };
-		5109F3FC1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBLAccessibilityWindowWatcher.m; sourceTree = "<group>"; };
 		51B8F21E1DB5097100E79EEC /* NMAccessibility.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NMAccessibility.framework; path = "../../../../../../../../../../Volumes/ramdisk/DerivedData/BBLAccessibility-esgbmsyjbvohsmcvptdxquuifqum/Build/Products/Debug/NMAccessibility.framework"; sourceTree = "<group>"; };
 		942474B517DF67D700BF9B61 /* Silica.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Silica.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		942474B817DF67D700BF9B61 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -123,8 +119,6 @@
 		942474BE17DF67D700BF9B61 /* Silica */ = {
 			isa = PBXGroup;
 			children = (
-				5109F3FB1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.h */,
-				5109F3FC1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.m */,
 				40DF250719ABF7660069CEE6 /* CGSSpaces.h */,
 				942474C517DF67D700BF9B61 /* Silica.h */,
 				942474E817DF6A3100BF9B61 /* Classes */,
@@ -180,7 +174,6 @@
 				40DF250819ABF7660069CEE6 /* CGSSpaces.h in Headers */,
 				40FC6ACC17FA599C00856CE7 /* SIApplication.h in Headers */,
 				942474E417DF693600BF9B61 /* SIUniversalAccessHelper.h in Headers */,
-				5109F3FD1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,7 +241,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5109F3FE1CC18097007E1D13 /* BBLAccessibilityWindowWatcher.m in Sources */,
 				4063AFDB17FB937A00E942E2 /* SISystemWideElement.m in Sources */,
 				40FC6AD517FA606A00856CE7 /* NSRunningApplication+Silica.m in Sources */,
 				40FC6ACD17FA599C00856CE7 /* SIApplication.m in Sources */,
