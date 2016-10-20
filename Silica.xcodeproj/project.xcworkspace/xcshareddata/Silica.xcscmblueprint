@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "BE91C9C5ADF3ADEE2969E31AF581A0C779CC0273",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BE91C9C5ADF3ADEE2969E31AF581A0C779CC0273" : 0,
+    "06E7CE2D0ECFC9E9F3EE80734E82F3C3A4072C4C" : 0,
+    "0187FD8E7B296CEAF7520105D6EDD775240C7EBA" : 0,
+    "6C71DF8D4EAED84A4BB92018D54642F26E11361D" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "20CEAEAA-5F8D-45D1-A695-E06696EA92DC",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BE91C9C5ADF3ADEE2969E31AF581A0C779CC0273" : "Silica\/",
+    "06E7CE2D0ECFC9E9F3EE80734E82F3C3A4072C4C" : "..\/..",
+    "0187FD8E7B296CEAF7520105D6EDD775240C7EBA" : "",
+    "6C71DF8D4EAED84A4BB92018D54642F26E11361D" : "..\/..\/.."
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Silica",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Silica.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:bigbearlabs\/BBLAccessibility.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0187FD8E7B296CEAF7520105D6EDD775240C7EBA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "bitbucket.org:bigbearlabs\/contexter-helper.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "06E7CE2D0ECFC9E9F3EE80734E82F3C3A4072C4C"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "bitbucket.org:bigbearlabs\/contexter.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6C71DF8D4EAED84A4BB92018D54642F26E11361D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:bigbearlabs\/Silica.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BE91C9C5ADF3ADEE2969E31AF581A0C779CC0273"
+    }
+  ]
+}
