@@ -62,9 +62,13 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-    SIAXNotificationHandler callback = (__bridge SIAXNotificationHandler)refcon;
+//    SIAXNotificationHandler callback = (__bridge SIAXNotificationHandler)refcon;
     SIWindow *window = [[SIWindow alloc] initWithAXElement:element];
-    callback(window);
+//    callback(window);
+  
+  // work around very occasional EXC_BAD_ACCESS when casting refcon back to handler by trying to pass in the observation.
+  SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
+  observation.handler(window);
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
@@ -89,7 +93,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
     [self.elementToObservations[accessibilityElement] addObject:observation];
 
-    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
+//    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
+      AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation);
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
