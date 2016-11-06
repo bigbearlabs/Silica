@@ -69,6 +69,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   // work around very occasional EXC_BAD_ACCESS when casting refcon back to handler by trying to pass in the observation.
   SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
   observation.handler(window);
+  
+  // IMPROVE check for element type and init application or accessibility element obj rather than window, if appropriate.
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
