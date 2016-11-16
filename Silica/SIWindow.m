@@ -343,6 +343,16 @@
     return YES;
 }
 
+-(BOOL)focusOnlyThisWindow {
+  AXError error =  AXUIElementPerformAction(self.axElementRef, kAXRaiseAction);
+
+  if (error != kAXErrorSuccess) {
+    return NO;
+  }
+  
+  return YES;
+}
+
 NSPoint SIMidpoint(NSRect r) {
     return NSMakePoint(NSMidX(r), NSMidY(r));
 }

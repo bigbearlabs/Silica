@@ -216,6 +216,8 @@
  */
 - (BOOL)focusWindow;
 
+- (BOOL)focusOnlyThisWindow;
+
 /**
  *  Move window focus to the first window to the west of the current window.
  */
