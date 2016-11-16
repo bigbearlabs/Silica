@@ -66,6 +66,12 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     SIWindow *window = [[SIWindow alloc] initWithAXElement:element];
 //    callback(window);
   
+  // ensure the pid is good before continuing.
+  if ([NSRunningApplication runningApplicationWithProcessIdentifier:window.processIdentifier] == nil) {
+    NSLog(@"WARN no running application for pid %@", @(window.processIdentifier));
+    return;
+  }
+  
   // work around very occasional EXC_BAD_ACCESS when casting refcon back to handler by trying to pass in the observation.
   SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
   observation.handler(window);
