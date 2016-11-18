@@ -162,4 +162,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     self.cachedWindows = nil;
 }
 
+
+-(NSRunningApplication*) runningApplication {
+  return [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+}
 @end

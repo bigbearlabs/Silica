@@ -122,14 +122,6 @@
     return [self stringForKey:kAXTitleAttribute];
 }
 
-- (NSString *)role {
-    return [self stringForKey:kAXRoleAttribute];
-}
-
-- (NSString *)subrole {
-    return [self stringForKey:kAXSubroleAttribute];
-}
-
 - (BOOL)isWindowMinimized {
     return [[self numberForKey:kAXMinimizedAttribute] boolValue];
 }
@@ -170,11 +162,6 @@
     CFRelease(windowDescriptions);
     
     return isActive;
-}
-
-- (SIApplication *)app {
-    NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-    return [SIApplication applicationWithRunningApplication:runningApplication];
 }
 
 #pragma mark Screen

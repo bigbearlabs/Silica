@@ -6,7 +6,7 @@
 #import "SIAccessibilityElement.h"
 
 #import "SISystemWideElement.h"
-
+#import "SIApplication.h"
 
 @interface SIAccessibilityElement ()
 @property (nonatomic, assign) AXUIElementRef axElementRef;
@@ -231,5 +231,19 @@
     return nil;
   }
 }
+
+- (SIApplication *)app {
+  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+  return [SIApplication applicationWithRunningApplication:runningApplication];
+}
+
+- (NSString *)role {
+  return [self stringForKey:kAXRoleAttribute];
+}
+
+- (NSString *)subrole {
+  return [self stringForKey:kAXSubroleAttribute];
+}
+
 
 @end
