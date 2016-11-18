@@ -62,21 +62,25 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-//    SIAXNotificationHandler callback = (__bridge SIAXNotificationHandler)refcon;
-    SIWindow *window = [[SIWindow alloc] initWithAXElement:element];
-//    callback(window);
+  SIWindow *window_ = [[SIWindow alloc] initWithAXElement:element];
+  
+  // reinitialise to more specific si element type.
+  SIAccessibilityElement *siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
+  if ([siElement.role isEqualToString:kAXWindowRole]) {
+    siElement = [[SIWindow alloc] initWithAXElement:element];
+  }
+  else if ([siElement.role isEqualToString:kAXApplicationRole]) {
+    siElement = [[SIApplication alloc] initWithAXElement:element];
+  }
   
   // ensure the pid is good before continuing.
-  if ([NSRunningApplication runningApplicationWithProcessIdentifier:window.processIdentifier] == nil) {
-    NSLog(@"WARN no running application for pid %@", @(window.processIdentifier));
+  if ([NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier] == nil) {
+    NSLog(@"WARN no running application for pid %@, thought to be %@", @(siElement.processIdentifier), siElement.app);
     return;
   }
   
-  // work around very occasional EXC_BAD_ACCESS when casting refcon back to handler by trying to pass in the observation.
   SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
-  observation.handler(window);
-  
-  // IMPROVE check for element type and init application or accessibility element obj rather than window, if appropriate.
+  observation.handler(siElement);
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
