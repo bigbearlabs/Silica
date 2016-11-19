@@ -227,7 +227,7 @@
     CFRelease(result);
     return elem;
   } else {
-    NSLog(@"no focused element...");
+    NSLog(@"no focused element for %@", self);
     return nil;
   }
 }
@@ -237,12 +237,22 @@
   return [SIApplication applicationWithRunningApplication:runningApplication];
 }
 
+- (NSString *)title {
+  return [self stringForKey:kAXTitleAttribute];
+}
+
+
 - (NSString *)role {
   return [self stringForKey:kAXRoleAttribute];
 }
 
 - (NSString *)subrole {
   return [self stringForKey:kAXSubroleAttribute];
+}
+
+- (NSArray *)children
+{
+  return [self arrayForKey:kAXChildrenAttribute];
 }
 
 

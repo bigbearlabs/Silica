@@ -143,9 +143,12 @@
  */
 - (SIApplication *)app;
 
+- (NSString *)title;
 
 - (NSString *)role;
 
 - (NSString *)subrole;
+
+- (NSArray*)children;  // NSArray<AXUIElementRef>*
 
 @end

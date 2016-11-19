@@ -118,10 +118,6 @@
     return self._windowID;
 }
 
-- (NSString *)title {
-    return [self stringForKey:kAXTitleAttribute];
-}
-
 - (BOOL)isWindowMinimized {
     return [[self numberForKey:kAXMinimizedAttribute] boolValue];
 }
@@ -402,5 +398,6 @@ NSPoint SIMidpoint(NSRect r) {
 - (void)focusWindowDown {
     [self focusFirstValidWindowIn:[self windowsToSouth]];
 }
+
 
 @end
