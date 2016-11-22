@@ -151,7 +151,10 @@
     if (!success) return CGRectNull;
     
     CGRect frame = { .origin.x = point.x, .origin.y = point.y, .size.width = size.width, .size.height = size.height };
-    
+  
+    if (pointRef) CFRelease(pointRef);
+    if (sizeRef) CFRelease(sizeRef);
+  
     return frame;
 }
 
