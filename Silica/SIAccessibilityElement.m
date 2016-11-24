@@ -193,9 +193,11 @@
     if (!CGPointEqualToPoint(position, [self frame].origin)) {
         error = AXUIElementSetAttributeValue(self.axElementRef, kAXPositionAttribute, positionRef);
         if (error != kAXErrorSuccess) {
-            return;
+            // debug here.
         }
     }
+  
+    if (positionRef) CFRelease(positionRef);
 }
 
 - (void)setSize:(CGSize)size {
@@ -205,9 +207,11 @@
     if (!CGSizeEqualToSize(size, [self frame].size)) {
         error = AXUIElementSetAttributeValue(self.axElementRef, kAXSizeAttribute, sizeRef);
         if (error != kAXErrorSuccess) {
-            return;
+          // debug here.
         }
     }
+
+    if (sizeRef) CFRelease(sizeRef);
 }
 
 - (pid_t)processIdentifier {
