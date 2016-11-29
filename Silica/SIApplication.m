@@ -62,8 +62,6 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-  SIWindow *window_ = [[SIWindow alloc] initWithAXElement:element];
-  
   // reinitialise to more specific si element type.
   SIAccessibilityElement *siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
   if ([siElement.role isEqualToString:kAXWindowRole]) {
@@ -72,15 +70,16 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   else if ([siElement.role isEqualToString:kAXApplicationRole]) {
     siElement = [[SIApplication alloc] initWithAXElement:element];
   }
-  
+
+  SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
+
   // ensure the pid is good before continuing.
-  if ([NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier] == nil) {
+  if ([NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier] != nil) {
+    observation.handler(siElement);
+  } else {
     NSLog(@"WARN no running application for pid %@, thought to be %@", @(siElement.processIdentifier), siElement.app);
     return;
   }
-  
-  SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
-  observation.handler(siElement);
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
