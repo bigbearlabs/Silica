@@ -107,4 +107,8 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  */
 - (void)dropWindowsCache;
 
+
+-(NSRunningApplication*) runningApplication;
+
+
 @end

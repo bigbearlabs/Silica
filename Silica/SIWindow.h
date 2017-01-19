@@ -136,13 +136,6 @@
  */
 - (BOOL)isOnScreen;
 
-/**
- *  Returns the application that owns the window.
- *
- *  @return A SIApplication instance for the application that owns the window.
- */
-- (SIApplication *)app;
-
 #pragma mark Screen
 /**---------------------------------------------------------------------------------------
  * @name Screen
@@ -215,6 +208,8 @@
  *  @return YES if the window was successfully brought into focus and NO otherwise.
  */
 - (BOOL)focusWindow;
+
+- (BOOL)focusOnlyThisWindow;
 
 /**
  *  Move window focus to the first window to the west of the current window.

@@ -5,6 +5,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class SIApplication;
+
+
 /**
  *  Object encapsulating an accessibility element. An accessibility element is anything from a button in a window to a running application.
  */
@@ -126,6 +129,29 @@
  */
 - (pid_t)processIdentifier;
 
+/**
+ *  Returns the focused child element.
+ *
+ *  @return A SIAccessibilityElement instance which is the focused element in the element hierarchy.
+ */
 -(SIAccessibilityElement*) focusedElement;
+
+/**
+ *  Returns the application that owns the element.
+ *
+ *  @return A SIApplication instance for the application that owns the element.
+ */
+- (SIApplication *)app;
+
+- (NSString *)title;
+
+- (NSString *)role;
+
+- (NSString *)subrole;
+
+/**
+ *  Returns a array of AXUIElementRef objects.
+ */
+- (NSArray*)children;
 
 @end

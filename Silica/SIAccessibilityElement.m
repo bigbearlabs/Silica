@@ -6,7 +6,7 @@
 #import "SIAccessibilityElement.h"
 
 #import "SISystemWideElement.h"
-
+#import "SIApplication.h"
 
 @interface SIAccessibilityElement ()
 @property (nonatomic, assign) AXUIElementRef axElementRef;
@@ -151,7 +151,10 @@
     if (!success) return CGRectNull;
     
     CGRect frame = { .origin.x = point.x, .origin.y = point.y, .size.width = size.width, .size.height = size.height };
-    
+  
+    if (pointRef) CFRelease(pointRef);
+    if (sizeRef) CFRelease(sizeRef);
+  
     return frame;
 }
 
@@ -190,9 +193,11 @@
     if (!CGPointEqualToPoint(position, [self frame].origin)) {
         error = AXUIElementSetAttributeValue(self.axElementRef, kAXPositionAttribute, positionRef);
         if (error != kAXErrorSuccess) {
-            return;
+            // debug here.
         }
     }
+  
+    if (positionRef) CFRelease(positionRef);
 }
 
 - (void)setSize:(CGSize)size {
@@ -202,9 +207,11 @@
     if (!CGSizeEqualToSize(size, [self frame].size)) {
         error = AXUIElementSetAttributeValue(self.axElementRef, kAXSizeAttribute, sizeRef);
         if (error != kAXErrorSuccess) {
-            return;
+          // debug here.
         }
     }
+
+    if (sizeRef) CFRelease(sizeRef);
 }
 
 - (pid_t)processIdentifier {
@@ -227,9 +234,33 @@
     CFRelease(result);
     return elem;
   } else {
-    NSLog(@"no focused element...");
+    NSLog(@"no focused element for %@", self);
     return nil;
   }
 }
+
+- (SIApplication *)app {
+  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+  return [SIApplication applicationWithRunningApplication:runningApplication];
+}
+
+- (NSString *)title {
+  return [self stringForKey:kAXTitleAttribute];
+}
+
+
+- (NSString *)role {
+  return [self stringForKey:kAXRoleAttribute];
+}
+
+- (NSString *)subrole {
+  return [self stringForKey:kAXSubroleAttribute];
+}
+
+- (NSArray *)children
+{
+  return [self arrayForKey:kAXChildrenAttribute];
+}
+
 
 @end

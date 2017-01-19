@@ -62,9 +62,24 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-    SIAXNotificationHandler callback = (__bridge SIAXNotificationHandler)refcon;
-    SIWindow *window = [[SIWindow alloc] initWithAXElement:element];
-    callback(window);
+  // reinitialise to more specific si element type.
+  SIAccessibilityElement *siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
+  if ([siElement.role isEqualToString:kAXWindowRole]) {
+    siElement = [[SIWindow alloc] initWithAXElement:element];
+  }
+  else if ([siElement.role isEqualToString:kAXApplicationRole]) {
+    siElement = [[SIApplication alloc] initWithAXElement:element];
+  }
+  
+  // guard against nil(0) pid.
+  if ([NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier] != nil && siElement.processIdentifier != 0 && siElement.app.processIdentifier != 0) {
+    SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
+    
+    observation.handler(siElement);
+  } else {
+    NSLog(@"WARN no running application for pid %@, thought to be %@", @(siElement.processIdentifier), siElement.app);
+    return;
+  }
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
@@ -82,6 +97,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
     SIApplicationObservation *observation = [[SIApplicationObservation alloc] init];
     observation.notification = (__bridge NSString *)notification;
+
     observation.handler = handler;
 
     if (!self.elementToObservations[accessibilityElement]) {
@@ -89,7 +105,10 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
     [self.elementToObservations[accessibilityElement] addObject:observation];
 
-    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
+//    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
+    // SPECULATIVE see if lack of retain is causing BAD_ACCESS#1 TODO
+    void* refcon = (__bridge void *)observation;
+      AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, refcon);
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
@@ -149,4 +168,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     self.cachedWindows = nil;
 }
 
+
+-(NSRunningApplication*) runningApplication {
+  return [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+}
 @end

@@ -118,18 +118,6 @@
     return self._windowID;
 }
 
-- (NSString *)title {
-    return [self stringForKey:kAXTitleAttribute];
-}
-
-- (NSString *)role {
-    return [self stringForKey:kAXRoleAttribute];
-}
-
-- (NSString *)subrole {
-    return [self stringForKey:kAXSubroleAttribute];
-}
-
 - (BOOL)isWindowMinimized {
     return [[self numberForKey:kAXMinimizedAttribute] boolValue];
 }
@@ -170,11 +158,6 @@
     CFRelease(windowDescriptions);
     
     return isActive;
-}
-
-- (SIApplication *)app {
-    NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-    return [SIApplication applicationWithRunningApplication:runningApplication];
 }
 
 #pragma mark Screen
@@ -343,6 +326,16 @@
     return YES;
 }
 
+-(BOOL)focusOnlyThisWindow {
+  AXError error =  AXUIElementPerformAction(self.axElementRef, kAXRaiseAction);
+
+  if (error != kAXErrorSuccess) {
+    return NO;
+  }
+  
+  return YES;
+}
+
 NSPoint SIMidpoint(NSRect r) {
     return NSMakePoint(NSMidX(r), NSMidY(r));
 }
@@ -405,5 +398,6 @@ NSPoint SIMidpoint(NSRect r) {
 - (void)focusWindowDown {
     [self focusFirstValidWindowIn:[self windowsToSouth]];
 }
+
 
 @end
