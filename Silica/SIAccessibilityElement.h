@@ -149,6 +149,9 @@
 
 - (NSString *)subrole;
 
-- (NSArray*)children;  // NSArray<AXUIElementRef>*
+/**
+ *  Returns a array of AXUIElementRef objects.
+ */
+- (NSArray*)children;
 
 @end
