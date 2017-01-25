@@ -94,12 +94,6 @@
  */
 - (CGWindowID)windowID;
 
-/**
- *  Returns the title of the window.
- *
- *  @return The title of the window or nil if the window has no title.
- */
-- (NSString *)title;
 
 /**
  *  Returns a BOOL indicating whether or not the window is minimized.
