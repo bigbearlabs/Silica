@@ -64,10 +64,10 @@
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
   // reinitialise to more specific si element type.
   SIAccessibilityElement *siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
-  if ([siElement.role isEqualToString:kAXWindowRole]) {
+  if ([siElement.role isEqualToString:(NSString *)kAXWindowRole]) {
     siElement = [[SIWindow alloc] initWithAXElement:element];
   }
-  else if ([siElement.role isEqualToString:kAXApplicationRole]) {
+  else if ([siElement.role isEqualToString:(NSString *)kAXApplicationRole]) {
     siElement = [[SIApplication alloc] initWithAXElement:element];
   }
   
