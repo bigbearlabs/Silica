@@ -35,7 +35,9 @@
     if (![SIUniversalAccessHelper isAccessibilityTrusted]) return nil;
 
     return [[self allWindows] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *win, NSDictionary *bindings) {
-        return ![[win app] isHidden]
+        return
+          [win app] != nil
+        && ![[win app] isHidden]
         && ![win isWindowMinimized]
         && [win isNormalWindow];
     }]];

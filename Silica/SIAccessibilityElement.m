@@ -241,7 +241,9 @@
 
 - (SIApplication *)app {
   NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-  return [SIApplication applicationWithRunningApplication:runningApplication];
+  return runningApplication ?
+    [SIApplication applicationWithRunningApplication:runningApplication]
+    : nil;
 }
 
 - (NSString *)title {

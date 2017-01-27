@@ -71,13 +71,14 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     siElement = [[SIApplication alloc] initWithAXElement:element];
   }
   
-  // guard against nil(0) pid.
-  if ([NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier] != nil && siElement.processIdentifier != 0 && siElement.app.processIdentifier != 0) {
+  // guard against invalid pids.
+  id runningApp = [NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier];
+  if (runningApp != nil && siElement.processIdentifier > 0 && siElement.app.processIdentifier > 0) {
     SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
     
     observation.handler(siElement);
   } else {
-    NSLog(@"WARN no running application for pid %@, thought to be %@", @(siElement.processIdentifier), siElement.app);
+    NSLog(@"WARN no running application for pid %@. details: %@, %@", @(siElement.processIdentifier), siElement.app, [runningApp debugDescription]);
     return;
   }
 }
@@ -135,8 +136,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 }
 
 - (NSArray *)visibleWindows {
-    return [self.windows filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *window, NSDictionary *bindings) {
-        return ![[window app] isHidden] && ![window isWindowMinimized] && [window isNormalWindow];
+    return [[SIWindow visibleWindows] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *win, NSDictionary *bindings) {
+      return win.processIdentifier == self.processIdentifier;
     }]];
 }
 
