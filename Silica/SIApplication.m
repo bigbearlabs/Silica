@@ -7,6 +7,9 @@
 
 #import "SIWindow.h"
 #import "SIUniversalAccessHelper.h"
+#import <BBLBasics/BBLBasics.h>
+
+
 
 @interface SIApplicationObservation : NSObject
 @property (nonatomic, strong) NSString *notification;
@@ -136,9 +139,12 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 }
 
 - (NSArray *)visibleWindows {
-    return [[SIWindow visibleWindows] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *win, NSDictionary *bindings) {
-      return win.processIdentifier == self.processIdentifier;
-    }]];
+  
+  pid_t pid = self.processIdentifier;
+  return [self.windows filterWith:^BOOL(SIWindow* window) {
+    return window.isVisible;
+  }];
+
 }
 
 - (NSString *)title {

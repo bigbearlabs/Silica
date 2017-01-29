@@ -35,11 +35,7 @@
     if (![SIUniversalAccessHelper isAccessibilityTrusted]) return nil;
 
     return [[self allWindows] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *win, NSDictionary *bindings) {
-        return
-          [win app] != nil
-        && ![[win app] isHidden]
-        && ![win isWindowMinimized]
-        && [win isNormalWindow];
+      return win.isVisible;
     }]];
 }
 
@@ -161,6 +157,14 @@
     
     return isActive;
 }
+
+-(BOOL) isVisible {
+  return ![[self app] isHidden]
+  && ![self isWindowMinimized];
+  //  && [self isNormalWindow];
+}
+// TODO confirm whether this includes windows in different spaces.
+
 
 #pragma mark Screen
 
