@@ -12,7 +12,7 @@
 
 
 @interface SIApplicationObservation : NSObject
-@property (nonatomic, strong) NSString *notification;
+@property (nonatomic, copy) NSString *notification;
 @property (nonatomic, copy) SIAXNotificationHandler handler;
 @end
 
