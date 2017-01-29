@@ -65,8 +65,9 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-  // reinitialise to more specific si element type.
   SIAccessibilityElement *siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
+
+  // reinitialise to more specific si element type.
   if ([siElement.role isEqualToString:(NSString *)kAXWindowRole]) {
     siElement = [[SIWindow alloc] initWithAXElement:element];
   }
@@ -77,9 +78,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   // guard against invalid pids.
   id runningApp = [NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier];
   if (runningApp != nil && siElement.processIdentifier > 0 && siElement.app.processIdentifier > 0) {
-    SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
-    
-    observation.handler(siElement);
+    SIAXNotificationHandler handler = (__bridge SIAXNotificationHandler)(refcon);
+    handler(siElement);
   } else {
     NSLog(@"WARN no running application for pid %@. details: %@, %@", @(siElement.processIdentifier), siElement.app, [runningApp debugDescription]);
     return;
@@ -109,10 +109,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
     [self.elementToObservations[accessibilityElement] addObject:observation];
 
-//    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
-    // SPECULATIVE see if lack of retain is causing BAD_ACCESS#1 TODO
-    void* refcon = (__bridge void *)observation;
-      AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, refcon);
+    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
