@@ -4,6 +4,8 @@
 //
 
 #import "SIAccessibilityElement.h"
+#import "SIWindow.h"
+
 
 /**
  *  Block type for the handling of accessibility notifications.
@@ -67,6 +69,10 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *  @return An array of SIWindow objects for all windows in the application that are currently visible.
  */
 - (NSArray *)visibleWindows;
+
+
+-(SIWindow*) focusedWindow;
+
 
 /**
  *  Returns the title of the application.

@@ -30,6 +30,10 @@
 
 #pragma mark Lifecycle
 
+// NOTE this method will implicitly instantiate new SIApplications.
+// if the caller then uses these instances to observe elemnts, the instances then cease to act as value types.
+// in fact, since SIAccessibilityElement's equality defers to the AXUIElement it wraps, value equality was never clear to begin with.
+// so, beware that SIApplications which act as observers need to be well-managed by the caller.
 + (instancetype)applicationWithRunningApplication:(NSRunningApplication *)runningApplication {
   @autoreleasepool {
     AXUIElementRef axElementRef = AXUIElementCreateApplication(runningApplication.processIdentifier);
@@ -155,6 +159,36 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     return window.isVisible;
   }];
 
+}
+
+-(SIWindow*) focusedWindow {
+//  return self.visibleWindows.firstObject;
+// TMP
+//  return [SIWindow focusedWindow];
+  
+//  if (applicationRef) {
+  CFTypeRef windowRef;
+  
+  AXError result = AXUIElementCopyAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityFocusedWindowAttribute, &windowRef);
+    
+//    CFRelease(applicationRef);
+  SIWindow* window = nil;
+  if (result == kAXErrorSuccess) {
+    window = [[SIWindow alloc] initWithAXElement:windowRef];
+    
+    if ([window isSheet]) {
+      SIAccessibilityElement *parent = [window elementForKey:kAXParentAttribute];
+      if (parent) {
+        window = [[SIWindow alloc] initWithAXElement:parent.axElementRef];
+      }
+    }
+    
+  }
+//  }
+  
+  if (windowRef) CFRelease(windowRef);
+  
+  return window;
 }
 
 - (NSString *)title {
