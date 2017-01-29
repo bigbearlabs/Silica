@@ -31,24 +31,33 @@
 #pragma mark Lifecycle
 
 + (instancetype)applicationWithRunningApplication:(NSRunningApplication *)runningApplication {
+  @autoreleasepool {
     AXUIElementRef axElementRef = AXUIElementCreateApplication(runningApplication.processIdentifier);
-    SIApplication *application = [[SIApplication alloc] initWithAXElement:axElementRef];
-    CFRelease(axElementRef);
-    return application;
+    if (axElementRef) {
+      SIApplication *application = [[SIApplication alloc] initWithAXElement:axElementRef];
+      CFRelease(axElementRef);
+      return application;
+    }
+    else {
+      return nil;
+    }
+  }
 }
 
 + (NSArray *)runningApplications {
     if (![SIUniversalAccessHelper isAccessibilityTrusted])
         return nil;
 
+
+  @autoreleasepool {
     NSMutableArray *apps = [NSMutableArray array];
-
-    for (NSRunningApplication *runningApp in [[NSWorkspace sharedWorkspace] runningApplications]) {
-        SIApplication *app = [SIApplication applicationWithRunningApplication:runningApp];
-        [apps addObject:app];
-    }
-
+      for (NSRunningApplication *runningApp in [[NSWorkspace sharedWorkspace] runningApplications]) {
+          SIApplication *app = [SIApplication applicationWithRunningApplication:runningApp];
+          [apps addObject:app];
+      }
+  
     return apps;
+  }
 }
 
 - (void)dealloc {
@@ -100,8 +109,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
 
     SIApplicationObservation *observation = [[SIApplicationObservation alloc] init];
+  
     observation.notification = (__bridge NSString *)notification;
-
     observation.handler = handler;
 
     if (!self.elementToObservations[accessibilityElement]) {
@@ -123,6 +132,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 #pragma mark Public Accessors
 
 - (NSArray *)windows {
+  @autoreleasepool {
+
     if (!self.cachedWindows) {
         self.cachedWindows = [NSMutableArray array];
         NSArray *windowRefs = [self arrayForKey:kAXWindowsAttribute];
@@ -134,6 +145,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
         }
     }
     return self.cachedWindows;
+  }
 }
 
 - (NSArray *)visibleWindows {

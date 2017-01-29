@@ -79,27 +79,50 @@
 }
 
 - (NSString *)stringForKey:(CFStringRef)accessibilityValueKey {
-    CFTypeRef valueRef;
+    CFTypeRef valueRef = NULL;
     AXError error;
 
     error = AXUIElementCopyAttributeValue(self.axElementRef, accessibilityValueKey, &valueRef);
 
-    if (error != kAXErrorSuccess || !valueRef) return nil;
-    if (CFGetTypeID(valueRef) != CFStringGetTypeID()) return nil;
+    if (error != kAXErrorSuccess) {
+      // this can happen with a title query onto xcode. errors are not considered abnormal.
+    }
+    else if (CFGetTypeID(valueRef) != CFStringGetTypeID()) {
+    }
 
-    return CFBridgingRelease(valueRef);
+    NSString * result = nil;
+    if (valueRef) {
+      result = (__bridge NSString*)valueRef;
+    }
+  
+    if (valueRef) CFRelease(valueRef);
+  
+    return result;
 }
 
 - (NSNumber *)numberForKey:(CFStringRef)accessibilityValueKey {
-    CFTypeRef valueRef;
+    CFTypeRef valueRef = NULL;
     AXError error;
 
     error = AXUIElementCopyAttributeValue(self.axElementRef, accessibilityValueKey, &valueRef);
 
-    if (error != kAXErrorSuccess || !valueRef) return nil;
-    if (CFGetTypeID(valueRef) != CFNumberGetTypeID() && CFGetTypeID(valueRef) != CFBooleanGetTypeID()) return nil;
-    
-    return CFBridgingRelease(valueRef);
+  if (error != kAXErrorSuccess || !valueRef) {
+  }
+  else if (CFGetTypeID(valueRef) != CFNumberGetTypeID() && CFGetTypeID(valueRef) != CFBooleanGetTypeID()) {
+  }
+
+  NSNumber* result = nil;
+  if (valueRef) {
+    result = (__bridge NSNumber*) valueRef;
+  }
+  
+  if (valueRef) CFRelease(valueRef);
+
+  return result;
+}
+
+-(BOOL)boolForKey:(CFStringRef)accessibilityValueKey {
+  return [[self numberForKey:accessibilityValueKey] boolValue];
 }
 
 - (NSArray *)arrayForKey:(CFStringRef)accessibilityValueKey {
@@ -108,9 +131,17 @@
 
     error = AXUIElementCopyAttributeValues(self.axElementRef, accessibilityValueKey, 0, 100, &arrayRef);
 
-    if (error != kAXErrorSuccess || !arrayRef) return nil;
+    if (error != kAXErrorSuccess) {
+    }
 
-    return CFBridgingRelease(arrayRef);
+    NSArray* result = nil;
+    if (arrayRef) {
+      result = (__bridge NSArray*) arrayRef;
+    }
+
+    if (arrayRef) CFRelease(arrayRef);
+    
+    return result;
 }
 
 - (SIAccessibilityElement *)elementForKey:(CFStringRef)accessibilityValueKey {
@@ -119,17 +150,24 @@
 
     error = AXUIElementCopyAttributeValue(self.axElementRef, accessibilityValueKey, &valueRef);
 
-    if (error != kAXErrorSuccess || !valueRef) return nil;
-    if (CFGetTypeID(valueRef) != AXUIElementGetTypeID()) return nil;
-
-    SIAccessibilityElement *element = [[SIAccessibilityElement alloc] initWithAXElement:(AXUIElementRef)valueRef];
-
-    CFRelease(valueRef);
-
-    return element;
+  if (error != kAXErrorSuccess || !valueRef) {
+  }
+  else if (CFGetTypeID(valueRef) != AXUIElementGetTypeID()) {
+  }
+  
+  SIAccessibilityElement *element = nil;
+  if (valueRef){
+    element = [[SIAccessibilityElement alloc] initWithAXElement:(AXUIElementRef)valueRef];
+  }
+  
+  if (valueRef) CFRelease(valueRef);
+  
+  return element;
 }
 
 - (CGRect)frame {
+  CGRect result = CGRectNull;
+  
     CFTypeRef pointRef;
     CFTypeRef sizeRef;
     AXError error;
@@ -145,17 +183,17 @@
     bool success;
     
     success = AXValueGetValue(pointRef, kAXValueCGPointType, &point);
-    if (!success) return CGRectNull;
-    
-    success = AXValueGetValue(sizeRef, kAXValueCGSizeType, &size);
-    if (!success) return CGRectNull;
-    
-    CGRect frame = { .origin.x = point.x, .origin.y = point.y, .size.width = size.width, .size.height = size.height };
-  
+    if (success) {
+      success = AXValueGetValue(sizeRef, kAXValueCGSizeType, &size);
+      if (success) {
+        result = CGRectMake(point.x, point.y, size.width, size.height);
+      }
+    }
+
     if (pointRef) CFRelease(pointRef);
     if (sizeRef) CFRelease(sizeRef);
   
-    return frame;
+    return result;
 }
 
 - (void)setFrame:(CGRect)frame {

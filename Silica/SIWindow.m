@@ -20,6 +20,7 @@
 #pragma mark Window Accessors
 
 + (NSArray *)allWindows {
+  @autoreleasepool {
     if (![SIUniversalAccessHelper isAccessibilityTrusted]) return nil;
     
     NSMutableArray *windows = [NSMutableArray array];
@@ -29,14 +30,19 @@
     }
     
     return windows;
+  }
 }
 
 + (NSArray *)visibleWindows {
+  @autoreleasepool {
+
     if (![SIUniversalAccessHelper isAccessibilityTrusted]) return nil;
 
     return [[self allWindows] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *win, NSDictionary *bindings) {
       return win.isVisible;
     }]];
+    
+  }
 }
 
 + (SIWindow *)focusedWindow {
