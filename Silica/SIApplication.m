@@ -114,9 +114,10 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
     for (SIApplicationObservation *observation in self.elementToObservations[accessibilityElement]) {
-        AXObserverRemoveNotification(self.observerRef, accessibilityElement.axElementRef, (__bridge CFStringRef)observation.notification);
+        if ([observation.notification isEqualToString:(__bridge NSString*) notification]) {
+            AXObserverRemoveNotification(self.observerRef, accessibilityElement.axElementRef, notification);
+        }
     }
-    [self.elementToObservations removeObjectForKey:accessibilityElement];
 }
 
 #pragma mark Public Accessors
