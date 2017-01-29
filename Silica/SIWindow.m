@@ -159,9 +159,9 @@
 }
 
 -(BOOL) isVisible {
-  return ![[self app] isHidden]
-  && ![self isWindowMinimized];
-  //  && [self isNormalWindow];
+  return
+    ![self boolForKey:(kAXHiddenAttribute)]
+    && ![self isWindowMinimized];
 }
 // TODO confirm whether this includes windows in different spaces.
 

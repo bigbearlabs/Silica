@@ -70,6 +70,8 @@
  */
 - (NSNumber *)numberForKey:(CFStringRef)accessibilityValueKey;
 
+-(BOOL)boolForKey:(CFStringRef)accessibilityValueKey;
+
 /**
  *  Returns the array value corresponding to the supplied key.
  *
@@ -137,11 +139,11 @@
 -(SIAccessibilityElement*) focusedElement;
 
 /**
- *  Returns the application that owns the element.
- *
- *  @return A SIApplication instance for the application that owns the element.
+ *  Returns a array of AXUIElementRef objects.
  */
-- (SIApplication *)app;
+- (NSArray*)children;
+
+
 
 - (NSString *)title;
 
@@ -149,9 +151,5 @@
 
 - (NSString *)subrole;
 
-/**
- *  Returns a array of AXUIElementRef objects.
- */
-- (NSArray*)children;
 
 @end

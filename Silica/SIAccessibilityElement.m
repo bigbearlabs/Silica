@@ -239,12 +239,6 @@
   }
 }
 
-- (SIApplication *)app {
-  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-  return runningApplication ?
-    [SIApplication applicationWithRunningApplication:runningApplication]
-    : nil;
-}
 
 - (NSString *)title {
   return [self stringForKey:kAXTitleAttribute];

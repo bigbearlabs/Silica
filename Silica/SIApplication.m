@@ -77,11 +77,11 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   
   // guard against invalid pids.
   id runningApp = [NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier];
-  if (runningApp != nil && siElement.processIdentifier > 0 && siElement.app.processIdentifier > 0) {
+  if (runningApp != nil && siElement.processIdentifier > 0) {
     SIAXNotificationHandler handler = (__bridge SIAXNotificationHandler)(refcon);
     handler(siElement);
   } else {
-    NSLog(@"WARN no running application for pid %@. details: %@, %@", @(siElement.processIdentifier), siElement.app, [runningApp debugDescription]);
+    NSLog(@"WARN no running application for pid %@. details: %@", @(siElement.processIdentifier), [runningApp debugDescription]);
     return;
   }
 }
