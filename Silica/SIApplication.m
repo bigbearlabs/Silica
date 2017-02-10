@@ -154,7 +154,6 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
 - (NSArray *)visibleWindows {
   
-  pid_t pid = self.processIdentifier;
   return [self.windows filterWith:^BOOL(SIWindow* window) {
     return window.isVisible;
   }];
