@@ -19,12 +19,18 @@
 @implementation SIApplicationObservation
 @end
 
+
 @interface SIApplication ()
+
 @property (nonatomic, assign) AXObserverRef observerRef;
 @property (nonatomic, strong) NSMutableDictionary *elementToObservations;
 
 @property (nonatomic, strong) NSMutableArray *cachedWindows;
+
+@property(readonly) NSURL* bundleUrl;
+
 @end
+
 
 @implementation SIApplication
 
@@ -38,7 +44,8 @@
   @autoreleasepool {
     AXUIElementRef axElementRef = AXUIElementCreateApplication(runningApplication.processIdentifier);
     if (axElementRef) {
-      SIApplication *application = [[SIApplication alloc] initWithAXElement:axElementRef];
+      id path = runningApplication.bundleURL;
+      SIApplication *application = [[SIApplication alloc] initWithAXElement:axElementRef bundleURL:path];
       CFRelease(axElementRef);
       return application;
     }
@@ -62,6 +69,20 @@
   
     return apps;
   }
+}
+
+
+- (instancetype)initWithAXElement:(AXUIElementRef)axElementRef bundleURL:(NSURL*)url
+{
+  self = [super initWithAXElement:axElementRef];
+  if (self) {
+    _bundleUrl = url;
+  }
+  return self;
+}
+
+-(NSString*) description {
+  return [NSString stringWithFormat:@"%@ %@", super.description, _bundleUrl.description];
 }
 
 - (void)dealloc {
