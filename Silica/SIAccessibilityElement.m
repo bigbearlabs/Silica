@@ -33,7 +33,7 @@
 #pragma mark NSObject
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"%@ <Title: %@> <pid: %d>", super.description, self.title, self.processIdentifier];
+    return [NSString stringWithFormat:@"%@ <Title: %@> <pid: %d>, %@, %@, %@", super.description, self.title, self.processIdentifier, [self class], self.role, self.subrole];
 }
 
 - (BOOL)isEqual:(id)object {
