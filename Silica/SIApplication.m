@@ -127,7 +127,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
         if (error != kAXErrorSuccess) return;
 
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
+        CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
 
         self.observerRef = observerRef;
         self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
