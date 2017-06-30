@@ -132,6 +132,7 @@
     error = AXUIElementCopyAttributeValues(self.axElementRef, accessibilityValueKey, 0, 100, &arrayRef);
 
     if (error != kAXErrorSuccess) {
+      NSLog(@"%@: ax error %@ retrieving value for %@", self, @(error), accessibilityValueKey);
     }
 
     NSArray* result = nil;
