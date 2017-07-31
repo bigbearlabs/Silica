@@ -99,25 +99,28 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-  SIAccessibilityElement *siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
-
-  // reinitialise to more specific si element type.
-  if ([siElement.role isEqualToString:(NSString *)kAXWindowRole]) {
+  // create the most specific si element type possible.
+  SIAccessibilityElement *siElement;
+  id role = siElement.role;
+  if ([role isEqualToString:(NSString *)kAXWindowRole]) {
     siElement = [[SIWindow alloc] initWithAXElement:element];
   }
-  else if ([siElement.role isEqualToString:(NSString *)kAXApplicationRole]) {
+  else if ([role isEqualToString:(NSString *)kAXApplicationRole]) {
     siElement = [[SIApplication alloc] initWithAXElement:element];
+  }
+  else {
+    siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
   }
   
   // guard against invalid pids.
-  id runningApp = [NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier];
-  if (runningApp != nil && siElement.processIdentifier > 0) {
-    SIAXNotificationHandler handler = (__bridge SIAXNotificationHandler)(refcon);
-    handler(siElement);
-  } else {
-    NSLog(@"WARN no running application for pid %@. details: %@", @(siElement.processIdentifier), [runningApp debugDescription]);
+  if (siElement.processIdentifier == 0 || [NSRunningApplication runningApplicationWithProcessIdentifier:siElement.processIdentifier] == nil) {
+    NSLog(@"WARN no running application for element: %@", siElement);
     return;
+
   }
+
+  SIAXNotificationHandler handler = (__bridge SIAXNotificationHandler)(refcon);
+  handler(siElement);
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
