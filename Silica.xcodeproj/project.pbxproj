@@ -75,6 +75,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		51FA4A321F577521007123B0 /* Private Headers */ = {
+			isa = PBXGroup;
+			children = (
+				40DF250719ABF7660069CEE6 /* CGSSpaces.h */,
+			);
+			name = "Private Headers";
+			sourceTree = "<group>";
+		};
 		942474AB17DF67D700BF9B61 = {
 			isa = PBXGroup;
 			children = (
@@ -117,8 +125,8 @@
 		942474BE17DF67D700BF9B61 /* Silica */ = {
 			isa = PBXGroup;
 			children = (
-				40DF250719ABF7660069CEE6 /* CGSSpaces.h */,
 				942474C517DF67D700BF9B61 /* Silica.h */,
+				51FA4A321F577521007123B0 /* Private Headers */,
 				942474E817DF6A3100BF9B61 /* Classes */,
 				942474BF17DF67D700BF9B61 /* Supporting Files */,
 			);
