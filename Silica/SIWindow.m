@@ -47,31 +47,35 @@
 
 + (SIWindow *)focusedWindow {
     if (![SIUniversalAccessHelper isAccessibilityTrusted]) return nil;
-
+  
     CFTypeRef applicationRef;
     AXUIElementCopyAttributeValue([SISystemWideElement systemWideElement].axElementRef, kAXFocusedApplicationAttribute, &applicationRef);
 
     if (applicationRef) {
-        CFTypeRef windowRef;
-        AXError result = AXUIElementCopyAttributeValue(applicationRef, (CFStringRef)NSAccessibilityFocusedWindowAttribute, &windowRef);
+      SIAccessibilityElement* application = [[SIAccessibilityElement alloc] initWithAXElement:applicationRef];
+      SIAccessibilityElement* focusedWindowElement = [application elementForKey:(CFStringRef)NSAccessibilityFocusedWindowAttribute];
 
-        CFRelease(applicationRef);
+      CFRelease(applicationRef);
 
-        if (result == kAXErrorSuccess) {
-            SIWindow *window = [[SIWindow alloc] initWithAXElement:windowRef];
+      // no focused window element: return nil.
+      if (focusedWindowElement == nil) {
+        return nil;
+      }
+      
+      SIWindow *window = [[SIWindow alloc] initWithAXElement:focusedWindowElement.axElementRef];
 
-            if ([window isSheet]) {
-                SIAccessibilityElement *parent = [window elementForKey:kAXParentAttribute];
-                if (parent) {
-                    return [[SIWindow alloc] initWithAXElement:parent.axElementRef];
-                }
-            }
+      if ([window isSheet]) {
+          SIAccessibilityElement *parent = [window elementForKey:kAXParentAttribute];
+          if (parent) {
+              return [[SIWindow alloc] initWithAXElement:parent.axElementRef];
+          }
+      }
 
-            return window;
-        }
+      return window;
     }
-    
-    return nil;
+    else {
+      return nil;
+    }
 }
 
 - (NSArray *)otherWindowsOnSameScreen {
