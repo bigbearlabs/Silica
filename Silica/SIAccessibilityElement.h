@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 
 @class SIApplication;
-
+@class SIWindow;
 
 /**
  *  Object encapsulating an accessibility element. An accessibility element is anything from a button in a window to a running application.
@@ -151,5 +151,6 @@
 
 - (NSString *)subrole;
 
+@property(readonly) SIWindow* window;
 
 @end

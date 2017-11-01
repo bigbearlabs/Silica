@@ -267,7 +267,7 @@
 
 -(SIAccessibilityElement*) focusedElement {
   AXUIElementRef result=NULL;
-  AXUIElementCopyAttributeValue([SISystemWideElement systemWideElement].axElementRef, kAXFocusedUIElementAttribute, (CFTypeRef *)&result);
+  AXUIElementCopyAttributeValue(self.axElementRef, kAXFocusedUIElementAttribute, (CFTypeRef *)&result);
   if (result) {
     id elem = [[SIAccessibilityElement alloc] initWithAXElement:result];
     CFRelease(result);
@@ -297,5 +297,20 @@
   return [self arrayForKey:kAXChildrenAttribute];
 }
 
+
+- (SIWindow *)window
+{
+  SIWindow* result = nil;
+  if ([[self class] isEqual:[SIWindow class]]) {
+    result = (SIWindow*) self;
+  }
+  else {
+    SIAccessibilityElement* windowElement = [self elementForKey:kAXWindowAttribute];
+    if (windowElement) {
+      result = [[SIWindow alloc] initWithAXElement:windowElement.axElementRef];
+    }
+  }
+  return result;
+}
 
 @end

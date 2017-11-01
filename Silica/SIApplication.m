@@ -7,6 +7,7 @@
 
 #import "SIWindow.h"
 #import "SIUniversalAccessHelper.h"
+#import "SISystemWideElement.h"
 #import <BBLBasics/BBLBasics.h>
 
 
@@ -68,6 +69,17 @@
       }
   
     return apps;
+  }
+}
+
++(SIApplication*) focusedApplication {
+  SIAccessibilityElement* appElement = [SISystemWideElement.systemWideElement elementForKey:kAXFocusedApplicationAttribute];
+  if (appElement) {
+    SIApplication* application = [[SIApplication alloc] initWithAXElement:appElement.axElementRef];
+    return application;
+  }
+  else {
+    return nil;
   }
 }
 

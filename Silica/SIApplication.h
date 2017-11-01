@@ -36,6 +36,13 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 + (NSArray *)runningApplications;
 
 /**
+ *  Returns the currently active application.
+ *
+ *  @return The currently active application.
+ */
++(instancetype) focusedApplication;
+
+/**
  *  Registers a notification handler for an accessibility notification.
  *
  *  Note that a strong reference to the handler is maintained, so any memory captured by the block will not be released until the notification handler is unregistered by calling unobserveNotification:withElement:
