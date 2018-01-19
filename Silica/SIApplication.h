@@ -40,7 +40,7 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *
  *  @return The currently active application.
  */
-+(instancetype) focusedApplication;
++(instancetype _Nullable) focusedApplication;
 
 /**
  *  Registers a notification handler for an accessibility notification.
@@ -78,7 +78,7 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 - (NSArray *)visibleWindows;
 
 
--(SIWindow*) focusedWindow;
+-(SIWindow* _Nullable) focusedWindow;
 
 
 /**

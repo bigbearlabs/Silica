@@ -72,7 +72,7 @@
   }
 }
 
-+(SIApplication*) focusedApplication {
++(SIApplication* _Nullable) focusedApplication {
   SIAccessibilityElement* appElement = [SISystemWideElement.systemWideElement elementForKey:kAXFocusedApplicationAttribute];
   if (appElement) {
     SIApplication* application = [[SIApplication alloc] initWithAXElement:appElement.axElementRef];
@@ -196,7 +196,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
 }
 
--(SIWindow*) focusedWindow {
+-(SIWindow* _Nullable) focusedWindow {
 //  return self.visibleWindows.firstObject;
 // TMP
 //  return [SIWindow focusedWindow];
