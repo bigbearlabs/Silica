@@ -7,6 +7,11 @@
 #import "SIWindow.h"
 
 
+// suppress the nullability warnings to avoid taking the hit of interface / contract changes.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnullability-completeness"
+
+
 /**
  *  Block type for the handling of accessibility notifications.
  *
@@ -125,3 +130,6 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 
 
 @end
+
+
+#pragma clang diagnostic pop
