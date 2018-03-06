@@ -171,7 +171,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
 #pragma mark Public Accessors
 
-- (NSArray *)windows {
+- (NSArray<SIWindow *> *)windows {
   @autoreleasepool {
 
     if (!self.cachedWindows) {

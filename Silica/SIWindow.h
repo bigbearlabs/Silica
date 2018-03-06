@@ -39,12 +39,17 @@
  */
 + (SIWindow *)focusedWindow;
 
+
++(instancetype)windowForElement:(SIAccessibilityElement*)accessibilityElement;
+
+
 /**
  *  Takes the window's screen and returns all other windows on the same screen.
  *
  *  @return An array of SIWindow objects representing all other windows on the same screen.
  */
 - (NSArray *)otherWindowsOnSameScreen;
+
 
 /**
  *  Returns all other visible windows, excluding the current window.
@@ -92,7 +97,7 @@
  *
  * @return The window ID of the window.
  */
-- (CGWindowID)windowID;
+@property(readonly) CGWindowID windowID;
 
 
 /**
