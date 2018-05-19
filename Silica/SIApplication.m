@@ -56,6 +56,12 @@
   }
 }
 
++ (instancetype)applicationForProcessIdentifier:(pid_t)processIdentifier {
+  NSRunningApplication* runningApp = [NSRunningApplication runningApplicationWithProcessIdentifier:processIdentifier];
+  return [self applicationWithRunningApplication:runningApp];
+}
+
+
 + (NSArray *)runningApplications {
     if (![SIUniversalAccessHelper isAccessibilityTrusted])
         return nil;

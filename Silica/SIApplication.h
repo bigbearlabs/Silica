@@ -33,6 +33,10 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  */
 + (instancetype)applicationWithRunningApplication:(NSRunningApplication *)runningApplication;
 
+
++ (instancetype)applicationForProcessIdentifier:(pid_t)processIdentifier;
+
+
 /**
  *  Returns all SIApplication instaces for all running applications.
  *
