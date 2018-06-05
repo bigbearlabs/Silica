@@ -139,6 +139,9 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
 
     callback(siElement);
+  
+  // NOTE the callback is invoked on the main thread. consider dispatching to a queue for parallel processing.
+  // (first ensure this is thread-safe)
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
