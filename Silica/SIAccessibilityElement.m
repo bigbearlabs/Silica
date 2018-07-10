@@ -297,4 +297,10 @@
   return [self arrayForKey:kAXChildrenAttribute];
 }
 
+-(NSArray*) attributeNames {
+  CFArrayRef names = NULL;
+  AXUIElementCopyAttributeNames(_axElementRef, &names);
+  return [(NSArray*)CFBridgingRelease(names) copy];
+}
+
 @end

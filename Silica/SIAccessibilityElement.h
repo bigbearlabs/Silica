@@ -150,5 +150,6 @@
 
 - (NSString *)subrole;
 
+- (NSArray*) attributeNames;
 
 @end
