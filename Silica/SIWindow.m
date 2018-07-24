@@ -78,6 +78,25 @@
     }
 }
 
++(instancetype)windowForElement:(SIAccessibilityElement*) element {
+  if ([[element class] isEqual:[SIWindow class]]) {
+    return (SIWindow*) element;
+  }
+  
+  if ([element.role isEqualToString:(NSString*)kAXWindowRole]) {
+    return [[SIWindow alloc] initWithAXElement:element.axElementRef];
+  }
+
+  SIAccessibilityElement* windowElement = [element elementForKey:kAXWindowAttribute];
+  if (windowElement) {
+    return [[SIWindow alloc] initWithAXElement:windowElement.axElementRef];
+  }
+
+  // nothing worked.
+  return nil;
+}
+
+
 - (NSArray *)otherWindowsOnSameScreen {
     return [[SIWindow visibleWindows] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(SIWindow *win, NSDictionary *bindings) {
         return ![self isEqual:win] && [[self screen] isEqual: [win screen]];

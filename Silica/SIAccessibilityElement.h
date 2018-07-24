@@ -139,10 +139,9 @@
 -(SIAccessibilityElement*) focusedElement;
 
 /**
- *  Returns a array of AXUIElementRef objects.
+ *  Returns an array of children AXUIElementRef objects.
  */
 - (NSArray*)children;
-
 
 
 - (NSString *)title;
@@ -151,6 +150,6 @@
 
 - (NSString *)subrole;
 
-@property(readonly) SIWindow* window;
+- (NSArray*) attributeNames;
 
 @end

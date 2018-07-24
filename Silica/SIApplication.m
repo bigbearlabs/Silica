@@ -56,6 +56,12 @@
   }
 }
 
++ (instancetype)applicationForProcessIdentifier:(pid_t)processIdentifier {
+  NSRunningApplication* runningApp = [NSRunningApplication runningApplicationWithProcessIdentifier:processIdentifier];
+  return [self applicationWithRunningApplication:runningApp];
+}
+
+
 + (NSArray *)runningApplications {
     if (![SIUniversalAccessHelper isAccessibilityTrusted])
         return nil;
@@ -133,6 +139,9 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
 
     callback(siElement);
+  
+  // NOTE the callback is invoked on the main thread. consider dispatching to a queue for parallel processing.
+  // (first ensure this is thread-safe)
 }
 
 - (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
@@ -171,7 +180,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
 #pragma mark Public Accessors
 
-- (NSArray *)windows {
+- (NSArray<SIWindow *> *)windows {
   @autoreleasepool {
 
     if (!self.cachedWindows) {
