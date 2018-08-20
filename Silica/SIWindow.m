@@ -83,7 +83,7 @@
     return (SIWindow*) element;
   }
   
-  if ([element.role isEqualToString:(NSString*)kAXWindowRole]) {
+  if ([element.role isEqualToString:(__bridge NSString*)kAXWindowRole]) {
     return [[SIWindow alloc] initWithAXElement:element.axElementRef];
   }
 
