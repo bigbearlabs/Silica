@@ -273,7 +273,7 @@
     CFRelease(result);
     return elem;
   } else {
-    NSLog(@"no focused element for %@", self);
+//    NSLog(@"no focused element for %@", self);
     return nil;
   }
 }
