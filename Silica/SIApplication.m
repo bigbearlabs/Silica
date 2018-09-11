@@ -144,19 +144,23 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   // (first ensure this is thread-safe)
 }
 
-- (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
+- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
     if (!self.observerRef) {
         AXObserverRef observerRef;
         AXError error = AXObserverCreate(self.processIdentifier, &observerCallback, &observerRef);
 
-        if (error != kAXErrorSuccess) return;
+        if (error != kAXErrorSuccess) return NO;
 
         CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
 
         self.observerRef = observerRef;
         self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
     }
-
+    
+    AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)handler);
+    
+    if (error != kAXErrorSuccess) return NO;
+    
     SIApplicationObservation *observation = [[SIApplicationObservation alloc] init];
   
     observation.notification = (__bridge NSString *)notification;
@@ -166,8 +170,8 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
         self.elementToObservations[accessibilityElement] = [NSMutableArray array];
     }
     [self.elementToObservations[accessibilityElement] addObject:observation];
-
-    AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation.handler);
+    
+    return YES;
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {

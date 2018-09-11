@@ -7,10 +7,8 @@
 #import "SIWindow.h"
 
 
-// suppress the nullability warnings to avoid taking the hit of interface / contract changes.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnullability-completeness"
 
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  Block type for the handling of accessibility notifications.
@@ -42,7 +40,7 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *
  *  @return All SIApplication instaces for all running applications.
  */
-+ (NSArray *)runningApplications;
++ (nullable NSArray *)runningApplications;
 
 /**
  *  Returns the currently active application.
@@ -68,8 +66,9 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *  @param notification         The notification to register a handler for.
  *  @param accessibilityElement The accessibility element associated with the notification. Must be an element owned by the application or the application itself.
  *  @param handler              A block to be called when the notification is received for the accessibility element.
+ *  @return YES if adding the observer succeeded, NO otherwise
  */
-- (void)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler;
+- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler;
 
 /**
  *  Unregisters a notification handler for an accessibility notification.
@@ -98,7 +97,7 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *
  *  @return The title of the application.
  */
-- (NSString *)title;
+- (nullable NSString *)title;
 
 /**
  *  Returns a BOOL indicating whether or not the application is hidden.
@@ -138,5 +137,4 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 
 @end
 
-
-#pragma clang diagnostic pop
+NS_ASSUME_NONNULL_END

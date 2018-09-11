@@ -8,6 +8,8 @@
 @class SIApplication;
 @class SIWindow;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  *  Object encapsulating an accessibility element. An accessibility element is anything from a button in a window to a running application.
  */
@@ -21,11 +23,9 @@
 @property (nonatomic, assign, readonly) AXUIElementRef axElementRef;
 
 /**
- *  Default init method deprecated for compile-time checking of using the correct initializer.
- *
- *  @return Always returns nil.
+ *  :nodoc:
  */
-- (id)init DEPRECATED_ATTRIBUTE;
+- (instancetype)init NS_UNAVAILABLE;
 
 /**
  *  Initializes the receiver as a wrapper around the supplied accessibility reference.
@@ -36,7 +36,7 @@
  *
  *  @return A SIAccessibilityElement instance encapsulating the supplied AXUIElement.
  */
-- (id)initWithAXElement:(AXUIElementRef)axElementRef;
+- (instancetype)initWithAXElement:(AXUIElementRef)axElementRef;
 
 /**
  *  Returns a BOOL indicating whether or not the element can be resized.
@@ -59,7 +59,7 @@
  *
  *  @return The string value corresponding to the supplied key. The return value is nil if the attribute does not exist or if the attribute is not a string.
  */
-- (NSString *)stringForKey:(CFStringRef)accessibilityValueKey;
+- (nullable NSString *)stringForKey:(CFStringRef)accessibilityValueKey;
 
 /**
  *  Returns the number value corresponding to the supplied key.
@@ -68,7 +68,7 @@
  *
  *  @return The number value corresponding to the supplied key. The return value is nil if the attribute does not exist or if the attribute is not a number.
  */
-- (NSNumber *)numberForKey:(CFStringRef)accessibilityValueKey;
+- (nullable NSNumber *)numberForKey:(CFStringRef)accessibilityValueKey;
 
 -(BOOL)boolForKey:(CFStringRef)accessibilityValueKey;
 
@@ -79,7 +79,7 @@
  *
  *  @return The array value corresponding to the supplied key. The return value is nil if the attribute does not exist or if the attribute is not an array.
  */
-- (NSArray *)arrayForKey:(CFStringRef)accessibilityValueKey;
+- (nullable NSArray *)arrayForKey:(CFStringRef)accessibilityValueKey;
 
 /**
  *  Returns the accessibility element corresponding to the supplied key.
@@ -88,7 +88,7 @@
  *
  *  @return The accessibility element corresponding to the supplied key. The return value is nil if the attribute does not exist or if the attribute is not an accessibility element.
  */
-- (SIAccessibilityElement *)elementForKey:(CFStringRef)accessibilityValueKey;
+- (nullable SIAccessibilityElement *)elementForKey:(CFStringRef)accessibilityValueKey;
 
 /**
  *  Returns the frame of the accessibility element.
@@ -107,6 +107,18 @@
  *  @param frame The frame to move the element to.
  */
 - (void)setFrame:(CGRect)frame;
+
+/**
+ *  Updates the frame of the accessibility element.
+ *
+ *  Updates the frame of the accessibility element to match the input frame as closely as possible given known parameters.
+ *
+ *  The frame's size will be ignored if its difference from the current frame is below the given threshold.
+ *
+ *  @param frame The frame to move the element to.
+ *  @param threshold The size difference (from curent size) below which resize requests will be ignored
+ */
+- (void)setFrame:(CGRect)frame withThreshold:(CGSize)threshold;
 
 /**
  *  Updates the position of the accessibility element.
@@ -153,3 +165,5 @@
 - (NSArray*) attributeNames;
 
 @end
+
+NS_ASSUME_NONNULL_END

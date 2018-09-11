@@ -16,9 +16,9 @@
 
 #pragma mark Lifecycle
 
-- (id)init { return nil; }
+- (instancetype)init { return nil; }
 
-- (id)initWithAXElement:(AXUIElementRef)axElementRef {
+- (instancetype)initWithAXElement:(AXUIElementRef)axElementRef {
     self = [super init];
     if (self) {
         self.axElementRef = CFRetain(axElementRef);
@@ -198,18 +198,16 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-    // We only want to set the size if the size has actually changed.
-    BOOL shouldSetSize = YES;
+    CGSize threshold = { .width = 25, .height = 25 };
+    [self setFrame:frame withThreshold:threshold];
+}
+
+- (void)setFrame:(CGRect)frame withThreshold:(CGSize)threshold {
+    // We only want to set the size if the size has actually changed more than a given amount.
     CGRect currentFrame = self.frame;
-    if (self.isResizable) {
-        if (fabs(currentFrame.size.width - frame.size.width) < 25) {
-            if (fabs(currentFrame.size.height - frame.size.height) < 25) {
-                shouldSetSize = NO;
-            }
-        }
-    } else {
-        shouldSetSize = NO;
-    }
+    BOOL shouldSetSize = self.isResizable
+        && (fabs(currentFrame.size.width - frame.size.width) >= threshold.width
+        ||  fabs(currentFrame.size.height - frame.size.height) >= threshold.height);
 
     // We set the size before and after setting the position because the
     // accessibility APIs are really finicky with setting size.
@@ -218,7 +216,9 @@
         self.size = frame.size;
     }
 
-    self.position = frame.origin;
+    if (!CGPointEqualToPoint(currentFrame.origin, frame.origin)) {
+        self.position = frame.origin;
+    }
 
     if (shouldSetSize) {
         self.size = frame.size;
