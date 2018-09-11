@@ -156,7 +156,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray*)children;
 
 
-- (NSString *)title;
+/**
+ *  Returns the title of the window.
+ *
+ *  @return The title of the window or nil if the window has no title.
+ */
+- (nullable NSString *)title;
+
 
 - (NSString *)role;
 

@@ -102,13 +102,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property(readonly) CGWindowID windowID;
 
 /**
- *  Returns the title of the window.
- *
- *  @return The title of the window or nil if the window has no title.
- */
-- (nullable NSString *)title;
-
-/**
  *  Returns a BOOL indicating whether or not the window is minimized.
  *
  *  @return YES if the window is minimized and NO otherwise.
