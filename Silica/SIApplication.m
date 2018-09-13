@@ -117,7 +117,8 @@
 #pragma mark AXObserver
 
 void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-    SIAXNotificationHandler callback = (__bridge SIAXNotificationHandler)refcon;
+    SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
+    SIAXNotificationHandler callback = observation.handler;
 
     // create the most specific si element type possible.
     SIAccessibilityElement *siElement;
@@ -157,15 +158,15 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
         self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
     }
     
-    AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)handler);
-    
-    if (error != kAXErrorSuccess) return NO;
-    
     SIApplicationObservation *observation = [[SIApplicationObservation alloc] init];
   
     observation.notification = (__bridge NSString *)notification;
     observation.handler = handler;
+  
+    AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation);
 
+    if (error != kAXErrorSuccess) return NO;
+  
     if (!self.elementToObservations[accessibilityElement]) {
         self.elementToObservations[accessibilityElement] = [NSMutableArray array];
     }
