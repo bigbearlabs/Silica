@@ -119,7 +119,7 @@
 
 #pragma mark AXObserver
 
-void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, CFDictionaryRef info, void *refcon) {
+void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, CFDictionaryRef info, void *refcon) {
   
   SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
   
@@ -149,11 +149,11 @@ void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFString
 }
 
 
-- (BOOL)observeNotification_2:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
+- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
   
   if (!self.observerRef) {
     AXObserverRef observerRef;
-    AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback_2, &observerRef);
+    AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
     if (error != kAXErrorSuccess) return NO;
     
     CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);

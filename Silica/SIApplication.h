@@ -72,16 +72,13 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 /**
  *  Registers a notification handler for an accessibility notification.
  *
- *  Note that a strong reference to the handler is maintained, so any memory captured by the block will not be released until the notification handler is unregistered by calling unobserveNotification:withElement:
+ *  the notification handler is a function defined in the implementation of this class which posts an NSNotification with name AX_EVENT_NOTIFICATION, user info with key AX_EVENT_DATA_NOTIFICATION.
  *
  *  @param notification         The notification to register a handler for.
  *  @param accessibilityElement The accessibility element associated with the notification. Must be an element owned by the application or the application itself.
- *  @param handler              A block to be called when the notification is received for the accessibility element.
  *  @return YES if adding the observer succeeded, NO otherwise
  */
-- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler;
-
-- (BOOL)observeNotification_2:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
+- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
 
 /**
  *  Unregisters a notification handler for an accessibility notification.
