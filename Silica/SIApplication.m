@@ -12,9 +12,12 @@
 
 
 
+@implementation SIAXNotificationData
+@end
+
+
 @interface SIApplicationObservation : NSObject
 @property (nonatomic, copy) NSString *notification;
-@property (nonatomic, copy) SIAXNotificationHandler handler;
 @end
 
 @implementation SIApplicationObservation
@@ -33,15 +36,7 @@
 @end
 
 
-static NSMutableDictionary<NSString*, SIApplicationObservation*>* observationsByPid;
-
 @implementation SIApplication
-
-+(void)initialize {
-  if (!observationsByPid) {
-    observationsByPid = @{}.mutableCopy;
-  }
-}
 
 #pragma mark Lifecycle
 
@@ -124,69 +119,6 @@ static NSMutableDictionary<NSString*, SIApplicationObservation*>* observationsBy
 
 #pragma mark AXObserver
 
-
-void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, CFDictionaryRef info, void *refcon) {
-
-    SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
-
-    // create the most specific si element type possible.
-    id role = siElement.role;
-    if ([role isEqual:(NSString *)kAXWindowRole]) {
-      siElement = [[SIWindow alloc] initWithAXElement:element];
-    }
-    else if ([role isEqual:(NSString *)kAXApplicationRole]) {
-      siElement = [[SIApplication alloc] initWithAXElement:element];
-    }
-  
-    // guard against invalid / terminated pids.
-    if (siElement.processIdentifier == 0) {
-      NSLog(@"WARN no running application for element: %@", siElement);
-      return;
-    }
-
-  // FIXME occasional crash when casting refcon back to observation.
-  // upstream issue: https://github.com/ianyh/Silica/issues/10
-  //
-  // remedies attempted:
-  // - investigated whether a certain class of ax events are responsible -- didn't seem to be the case.
-  // - investigated whether we can avoid using refcon altogether -- conflicts with allowed use cases by api.
-  // - changed refcon from the callback function pointer to the observation object -- did not eliminate crashes.
-  // - changed refcon to a uuid key of a static dictionary of observations -- encountered crashes likely from access from multiple threads.
-  //
-  // outstanding options:
-  // - don't use refcon, broadcast an NSNotification with ax data instead
-  // - see if replacing Silica with AXSwift or other ax wrapper lib might help
-  
-    // ignore elements with nil roles, to see if it helps with the infrequent crashes when casting refcon back to an observation.
-    // burn-in test to find any regression.
-    // findings: this will filter out 'destroyed' ax event.
-  
-//    if (siElement.role == nil) {
-//      return;
-//    }
-  
-    SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
-    SIAXNotificationHandler callback = observation.handler;
-    callback(siElement);
-
-  // IT2 to work around sporadic crashes when casting refcon back to an observation,
-  // fetch callback from a dictionary instead.
-  // ABORT it's not trivial to retrieve the handler at this point, since the API allows many ax elements of the ax app to be observed.
-//    id pid = @(siElement.processIdentifier);
-//    NSDictionary* observations = observationsByPid[pid];
-//    SIApplicationObservation* observation = observations[
-//    SIAXNotificationHandler callback = observation.handler;
-  
-//  // IT3
-//  NSString* observationKey = (__bridge NSString*) refcon;
-//  SIApplicationObservation* observation = observationsByPid[observationKey];
-//  SIAXNotificationHandler callback = observation.handler;
-//    callback(siElement);
-  
-  // NOTE the callback is invoked on the main thread. consider dispatching to a queue for parallel processing.
-  // (first ensure this is thread-safe)
-}
-
 void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, CFDictionaryRef info, void *refcon) {
   
   SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
@@ -206,49 +138,19 @@ void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFString
     return;
   }
   
-  id axData = @{
-                @"notification": (__bridge NSString*) notification,
-                @"element": siElement,
-                };
-//  NSNotification* axEventNotification = [NSNotification notificationWithName:@"MyAXNotif" object:nil userInfo:axData];
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [NSNotificationCenter.defaultCenter postNotificationName:NOTIF_AX object:siElement userInfo:axData];
-  });
-}
-
-- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
-    if (!self.observerRef) {
-        AXObserverRef observerRef;
-        AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
-        if (error != kAXErrorSuccess) return NO;
-
-        CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
-
-        self.observerRef = observerRef;
-        self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
-    }
-    
-    SIApplicationObservation *observation = [[SIApplicationObservation alloc] init];
+  SIAXNotificationData* axData = [[SIAXNotificationData alloc] init];
+  axData.axNotification = notification;
+  axData.siElement = siElement;
   
-    observation.notification = (__bridge NSString *)notification;
-    observation.handler = handler;
-  
-    AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, (__bridge void *)observation);
-
-    if (error != kAXErrorSuccess) return NO;
-  
-    if (!self.elementToObservations[accessibilityElement]) {
-        self.elementToObservations[accessibilityElement] = [NSMutableArray array];
-    }
-    [self.elementToObservations[accessibilityElement] addObject:observation];
-  
-  //    NSString* observationKey = [[NSUUID UUID] UUIDString];
-//  observationsByPid[observationKey] = observation;
-    return YES;
+  [NSNotificationCenter.defaultCenter
+   postNotificationName:AX_EVENT_NOTIFICATION
+   object:siElement
+   userInfo:@{ AX_EVENT_NOTIFICATION_DATA: axData }];
 }
 
 
 - (BOOL)observeNotification_2:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
+  
   if (!self.observerRef) {
     AXObserverRef observerRef;
     AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback_2, &observerRef);
@@ -260,6 +162,9 @@ void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFString
     self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
   }
   
+  SIApplicationObservation *observation = [[SIApplicationObservation alloc] init];
+  
+  observation.notification = (__bridge NSString *)notification;
   
   AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, nil);
   
@@ -268,10 +173,8 @@ void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFString
   if (!self.elementToObservations[accessibilityElement]) {
     self.elementToObservations[accessibilityElement] = [NSMutableArray array];
   }
-//  [self.elementToObservations[accessibilityElement] addObject:observation];
+  [self.elementToObservations[accessibilityElement] addObject:observation];
   
-  //    NSString* observationKey = [[NSUUID UUID] UUIDString];
-  //  observationsByPid[observationKey] = observation;
   return YES;
 }
 

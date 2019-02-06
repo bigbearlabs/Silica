@@ -8,8 +8,16 @@
 
 
 
-#define NOTIF_AX @"MyAxNotif"
+#define AX_EVENT_NOTIFICATION @"AX_EVENT_NOTIFICATION"
+#define AX_EVENT_NOTIFICATION_DATA @"AX_EVENT_NOTIFICATION_DATA"
 
+
+@interface SIAXNotificationData : NSObject
+
+@property CFStringRef axNotification;
+@property SIAccessibilityElement* siElement;
+
+@end
 
 NS_ASSUME_NONNULL_BEGIN
 
