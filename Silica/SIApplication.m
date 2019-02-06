@@ -33,7 +33,15 @@
 @end
 
 
+static NSMutableDictionary<NSString*, SIApplicationObservation*>* observationsByPid;
+
 @implementation SIApplication
+
++(void)initialize {
+  if (!observationsByPid) {
+    observationsByPid = @{}.mutableCopy;
+  }
+}
 
 #pragma mark Lifecycle
 
@@ -116,21 +124,18 @@
 
 #pragma mark AXObserver
 
-void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, void *refcon) {
-    SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
-    SIAXNotificationHandler callback = observation.handler;
+
+void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, CFDictionaryRef info, void *refcon) {
+
+    SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
 
     // create the most specific si element type possible.
-    SIAccessibilityElement *siElement;
     id role = siElement.role;
-    if ([role isEqualToString:(NSString *)kAXWindowRole]) {
+    if ([role isEqual:(NSString *)kAXWindowRole]) {
       siElement = [[SIWindow alloc] initWithAXElement:element];
     }
-    else if ([role isEqualToString:(NSString *)kAXApplicationRole]) {
+    else if ([role isEqual:(NSString *)kAXApplicationRole]) {
       siElement = [[SIApplication alloc] initWithAXElement:element];
-    }
-    else {
-      siElement = [[SIAccessibilityElement alloc] initWithAXElement:element];
     }
   
     // guard against invalid / terminated pids.
@@ -182,11 +187,39 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   // (first ensure this is thread-safe)
 }
 
+void observerCallback_2(AXObserverRef observer, AXUIElementRef element, CFStringRef notification, CFDictionaryRef info, void *refcon) {
+  
+  SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
+  
+  // create the most specific si element type possible.
+  id role = siElement.role;
+  if ([role isEqual:(NSString *)kAXWindowRole]) {
+    siElement = [[SIWindow alloc] initWithAXElement:element];
+  }
+  else if ([role isEqual:(NSString *)kAXApplicationRole]) {
+    siElement = [[SIApplication alloc] initWithAXElement:element];
+  }
+  
+  // guard against invalid / terminated pids.
+  if (siElement.processIdentifier == 0) {
+    NSLog(@"WARN no running application for element: %@", siElement);
+    return;
+  }
+  
+  id axData = @{
+                @"notification": (__bridge NSString*) notification,
+                @"element": siElement,
+                };
+//  NSNotification* axEventNotification = [NSNotification notificationWithName:@"MyAXNotif" object:nil userInfo:axData];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [NSNotificationCenter.defaultCenter postNotificationName:NOTIF_AX object:siElement userInfo:axData];
+  });
+}
+
 - (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler {
     if (!self.observerRef) {
         AXObserverRef observerRef;
-        AXError error = AXObserverCreate(self.processIdentifier, &observerCallback, &observerRef);
-
+        AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
         if (error != kAXErrorSuccess) return NO;
 
         CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
@@ -212,6 +245,34 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   //    NSString* observationKey = [[NSUUID UUID] UUIDString];
 //  observationsByPid[observationKey] = observation;
     return YES;
+}
+
+
+- (BOOL)observeNotification_2:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
+  if (!self.observerRef) {
+    AXObserverRef observerRef;
+    AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback_2, &observerRef);
+    if (error != kAXErrorSuccess) return NO;
+    
+    CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
+    
+    self.observerRef = observerRef;
+    self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
+  }
+  
+  
+  AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, nil);
+  
+  if (error != kAXErrorSuccess) return NO;
+  
+  if (!self.elementToObservations[accessibilityElement]) {
+    self.elementToObservations[accessibilityElement] = [NSMutableArray array];
+  }
+//  [self.elementToObservations[accessibilityElement] addObject:observation];
+  
+  //    NSString* observationKey = [[NSUUID UUID] UUIDString];
+  //  observationsByPid[observationKey] = observation;
+  return YES;
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {

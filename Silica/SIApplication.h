@@ -8,6 +8,9 @@
 
 
 
+#define NOTIF_AX @"MyAxNotif"
+
+
 NS_ASSUME_NONNULL_BEGIN
 
 /**
@@ -69,6 +72,8 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *  @return YES if adding the observer succeeded, NO otherwise
  */
 - (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement handler:(SIAXNotificationHandler)handler;
+
+- (BOOL)observeNotification_2:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
 
 /**
  *  Unregisters a notification handler for an accessibility notification.
