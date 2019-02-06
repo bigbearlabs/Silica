@@ -139,7 +139,44 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
       return;
     }
 
+  // FIXME occasional crash when casting refcon back to observation.
+  // upstream issue: https://github.com/ianyh/Silica/issues/10
+  //
+  // remedies attempted:
+  // - investigated whether a certain class of ax events are responsible -- didn't seem to be the case.
+  // - investigated whether we can avoid using refcon altogether -- conflicts with allowed use cases by api.
+  // - changed refcon from the callback function pointer to the observation object -- did not eliminate crashes.
+  // - changed refcon to a uuid key of a static dictionary of observations -- encountered crashes likely from access from multiple threads.
+  //
+  // outstanding options:
+  // - don't use refcon, broadcast an NSNotification with ax data instead
+  // - see if replacing Silica with AXSwift or other ax wrapper lib might help
+  
+    // ignore elements with nil roles, to see if it helps with the infrequent crashes when casting refcon back to an observation.
+    // burn-in test to find any regression.
+    // findings: this will filter out 'destroyed' ax event.
+  
+//    if (siElement.role == nil) {
+//      return;
+//    }
+  
+    SIApplicationObservation* observation = (__bridge SIApplicationObservation*)refcon;
+    SIAXNotificationHandler callback = observation.handler;
     callback(siElement);
+
+  // IT2 to work around sporadic crashes when casting refcon back to an observation,
+  // fetch callback from a dictionary instead.
+  // ABORT it's not trivial to retrieve the handler at this point, since the API allows many ax elements of the ax app to be observed.
+//    id pid = @(siElement.processIdentifier);
+//    NSDictionary* observations = observationsByPid[pid];
+//    SIApplicationObservation* observation = observations[
+//    SIAXNotificationHandler callback = observation.handler;
+  
+//  // IT3
+//  NSString* observationKey = (__bridge NSString*) refcon;
+//  SIApplicationObservation* observation = observationsByPid[observationKey];
+//  SIAXNotificationHandler callback = observation.handler;
+//    callback(siElement);
   
   // NOTE the callback is invoked on the main thread. consider dispatching to a queue for parallel processing.
   // (first ensure this is thread-safe)
@@ -171,7 +208,9 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
         self.elementToObservations[accessibilityElement] = [NSMutableArray array];
     }
     [self.elementToObservations[accessibilityElement] addObject:observation];
-    
+  
+  //    NSString* observationKey = [[NSUUID UUID] UUIDString];
+//  observationsByPid[observationKey] = observation;
     return YES;
 }
 
