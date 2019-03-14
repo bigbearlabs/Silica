@@ -90,14 +90,7 @@
     else if (CFGetTypeID(valueRef) != CFStringGetTypeID()) {
     }
 
-    NSString * result = nil;
-    if (valueRef) {
-      result = (__bridge NSString*)valueRef;
-    }
-  
-    if (valueRef) CFRelease(valueRef);
-  
-    return result;
+  return (NSString*)CFBridgingRelease(valueRef);
 }
 
 - (NSNumber *)numberForKey:(CFStringRef)accessibilityValueKey {
