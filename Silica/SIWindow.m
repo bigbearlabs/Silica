@@ -377,8 +377,14 @@
 }
 
 -(BOOL)focusOnlyThisWindow {
-  AXError error =  AXUIElementPerformAction(self.axElementRef, kAXRaiseAction);
 
+  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+  BOOL success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+  if (!success) {
+    return NO;
+  }
+  
+  AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
   if (error != kAXErrorSuccess) {
     return NO;
   }
