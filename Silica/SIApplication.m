@@ -221,7 +221,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 //  if (applicationRef) {
   CFTypeRef windowRef;
   
-  AXError result = AXUIElementCopyAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityFocusedWindowAttribute, &windowRef);
+  AXError result = AXUIElementCopyAttributeValue(self.axElementRef, kAXFocusedWindowAttribute, &windowRef);
     
 //    CFRelease(applicationRef);
   SIWindow* window = nil;

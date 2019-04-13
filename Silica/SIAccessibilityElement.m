@@ -90,7 +90,7 @@
     else if (CFGetTypeID(valueRef) != CFStringGetTypeID()) {
     }
 
-  return (NSString*)CFBridgingRelease(valueRef);
+  return [(NSString*)CFBridgingRelease(valueRef) copy];
 }
 
 - (NSNumber *)numberForKey:(CFStringRef)accessibilityValueKey {
@@ -139,7 +139,7 @@
 }
 
 - (SIAccessibilityElement *)elementForKey:(CFStringRef)accessibilityValueKey {
-    CFTypeRef valueRef;
+    CFTypeRef valueRef = nil;
     AXError error;
 
     error = AXUIElementCopyAttributeValue(self.axElementRef, accessibilityValueKey, &valueRef);
@@ -154,40 +154,38 @@
     element = [[SIAccessibilityElement alloc] initWithAXElement:(AXUIElementRef)valueRef];
   }
   
-  if (valueRef) CFRelease(valueRef);
+  if (valueRef != nil) CFRelease(valueRef);
   
   return element;
 }
 
 - (CGRect)frame {
+  CFTypeRef pointRef;
+  CFTypeRef sizeRef;
+  AXError error;
+  
   CGRect result = CGRectNull;
   
-    CFTypeRef pointRef;
-    CFTypeRef sizeRef;
-    AXError error;
-    
-    error = AXUIElementCopyAttributeValue(self.axElementRef, kAXPositionAttribute, &pointRef);
-    if (error != kAXErrorSuccess || !pointRef) return CGRectNull;
-    
-    error = AXUIElementCopyAttributeValue(self.axElementRef, kAXSizeAttribute, &sizeRef);
-    if (error != kAXErrorSuccess || !sizeRef) return CGRectNull;
-    
-    CGPoint point;
-    CGSize size;
-    bool success;
-    
-    success = AXValueGetValue(pointRef, kAXValueCGPointType, &point);
-    if (success) {
-      success = AXValueGetValue(sizeRef, kAXValueCGSizeType, &size);
-      if (success) {
-        result = CGRectMake(point.x, point.y, size.width, size.height);
-      }
-    }
-
-    if (pointRef) CFRelease(pointRef);
-    if (sizeRef) CFRelease(sizeRef);
+  error = AXUIElementCopyAttributeValue(self.axElementRef, kAXPositionAttribute, &pointRef);
+  if (error != kAXErrorSuccess || !pointRef) return CGRectNull;
   
-    return result;
+  CGPoint point;
+  BOOL gotValue = AXValueGetValue(pointRef, kAXValueCGPointType, &point);
+  if (!gotValue) return CGRectNull;
+
+  if (pointRef) CFRelease(pointRef);
+
+  error = AXUIElementCopyAttributeValue(self.axElementRef, kAXSizeAttribute, &sizeRef);
+  if (error != kAXErrorSuccess || !sizeRef) return CGRectNull;
+
+  CGSize size;
+  gotValue = AXValueGetValue(sizeRef, kAXValueCGSizeType, &size);
+  if (!gotValue) return CGRectNull;
+
+  if (sizeRef) CFRelease(sizeRef);
+  
+  result = CGRectMake(point.x, point.y, size.width, size.height);
+  return result;
 }
 
 - (void)setFrame:(CGRect)frame {
