@@ -14,8 +14,8 @@
 
 @interface SIAXNotificationData : NSObject
 
-@property CFStringRef axNotification;
-@property SIAccessibilityElement* siElement;
+@property CFStringRef _Nonnull axNotification;
+@property SIAccessibilityElement* _Nonnull siElement;
 
 @end
 
