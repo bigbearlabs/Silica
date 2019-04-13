@@ -217,10 +217,11 @@
 			};
 			buildConfigurationList = 942474AF17DF67D700BF9B61 /* Build configuration list for PBXProject "Silica" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 942474AB17DF67D700BF9B61;
 			productRefGroup = 942474B617DF67D700BF9B61 /* Products */;
