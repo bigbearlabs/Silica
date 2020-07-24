@@ -226,7 +226,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)focusWindow;
 
+
 - (BOOL)focusOnlyThisWindow;
+
+- (BOOL)raise;
+
 
 /**
  *  Move window focus to the first window to the west of the current window.

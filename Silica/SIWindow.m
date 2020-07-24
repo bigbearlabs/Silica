@@ -361,6 +361,7 @@
 
 #pragma mark Window Focus
 
+// NOTE activates all windows of this app.
 - (BOOL)focusWindow {
     NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
     BOOL success = [runningApplication activateWithOptions:NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps];
@@ -368,9 +369,9 @@
         return NO;
     }
 
-    AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
-    if (error != kAXErrorSuccess) {
-        return NO;
+    success = [self raise];
+    if (!success) {
+      return NO;
     }
 
     return YES;
@@ -378,17 +379,26 @@
 
 -(BOOL)focusOnlyThisWindow {
 
+  BOOL success = [self raise];
+  if (!success) {
+    return NO;
+  }
+
   NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-  BOOL success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+  success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
   if (!success) {
     return NO;
   }
   
+  return YES;
+}
+
+-(BOOL)raise {
   AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
   if (error != kAXErrorSuccess) {
     return NO;
   }
-  
+
   return YES;
 }
 
