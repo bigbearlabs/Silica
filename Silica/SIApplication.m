@@ -46,6 +46,10 @@
 // so, beware that SIApplications which act as observers need to be well-managed by the caller.
 + (instancetype)applicationWithRunningApplication:(NSRunningApplication *)runningApplication {
   @autoreleasepool {
+    if (runningApplication == nil) {
+      return nil;
+    }
+    
     AXUIElementRef axElementRef = AXUIElementCreateApplication(runningApplication.processIdentifier);
     if (axElementRef) {
       id path = runningApplication.bundleURL;
