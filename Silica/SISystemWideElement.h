@@ -3,7 +3,7 @@
 //  Silica
 //
 
-#import "SIAccessibilityElement.h"
+#import <Silica/SIAccessibilityElement.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
