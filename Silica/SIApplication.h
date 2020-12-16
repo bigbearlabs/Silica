@@ -3,8 +3,8 @@
 //  Silica
 //
 
-#import "SIAccessibilityElement.h"
-#import "SIWindow.h"
+#import <Silica/SIAccessibilityElement.h>
+#import <Silica/SIWindow.h>
 
 
 
