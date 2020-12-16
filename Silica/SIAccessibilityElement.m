@@ -33,7 +33,7 @@
 #pragma mark NSObject
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"%@ <Title: %@> <pid: %d>, %@, %@, %@", super.description, self.title, self.processIdentifier, [self class], self.role, self.subrole];
+    return [NSString stringWithFormat:@"%@ <Title: %@> pid: %d, %@/%@", super.description, self.title, self.processIdentifier, self.role, self.subrole];
 }
 
 - (BOOL)isEqual:(id)object {
@@ -125,7 +125,7 @@
     error = AXUIElementCopyAttributeValues(self.axElementRef, accessibilityValueKey, 0, 100, &arrayRef);
 
     if (error != kAXErrorSuccess) {
-      NSLog(@"%@: ax error %@ retrieving value for %@", self, @(error), accessibilityValueKey);
+      NSLog(@"%@: AXError %@ getting %@", self, @(error), accessibilityValueKey);
     }
 
     NSArray* result = nil;
@@ -133,9 +133,12 @@
       result = (__bridge NSArray*) arrayRef;
     }
 
-    if (arrayRef) CFRelease(arrayRef);
-    
+  if (arrayRef) {
+    CFRelease(arrayRef);
     return result;
+  } else {
+    return @[];
+  }
 }
 
 - (SIAccessibilityElement *)elementForKey:(CFStringRef)accessibilityValueKey {
