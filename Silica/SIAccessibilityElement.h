@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return The array value corresponding to the supplied key. The return value is nil if the attribute does not exist or if the attribute is not an array.
  */
-- (nullable NSArray *)arrayForKey:(CFStringRef)accessibilityValueKey;
+- (NSArray *)arrayForKey:(CFStringRef)accessibilityValueKey;
 
 /**
  *  Returns the accessibility element corresponding to the supplied key.
