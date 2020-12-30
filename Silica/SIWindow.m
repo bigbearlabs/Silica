@@ -10,6 +10,8 @@
 #import "SIApplication.h"
 #import "SISystemWideElement.h"
 #import "SIUniversalAccessHelper.h"
+#import <ApplicationServices/ApplicationServices.h>
+
 
 @interface SIWindow ()
 @property (nonatomic, assign) CGWindowID _windowID;
@@ -384,12 +386,17 @@
     return NO;
   }
 
-  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-  success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-  if (!success) {
-    return NO;
-  }
+//  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+//  success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+//  if (!success) {
+//    return NO;
+//  }
   
+  // WORKAROUND as of big sur, the above does not activate frontmost window only.
+  ProcessSerialNumber pn = {};
+  GetProcessForPID(self.processIdentifier, &pn);
+  SetFrontProcessWithOptions(&pn, kSetFrontProcessFrontWindowOnly);
+
   return YES;
 }
 
