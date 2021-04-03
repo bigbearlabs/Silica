@@ -160,8 +160,10 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
     if (error != kAXErrorSuccess) return NO;
     
-    CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
-    
+    // adding source to default mode results in problems with certain UI states (e.g. popup button opened),
+    // so use common modes.
+    CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopCommonModes);
+
     self.observerRef = observerRef;
     self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
   }
