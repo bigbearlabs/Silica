@@ -211,14 +211,6 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   }
 }
 
-- (NSArray *)visibleWindows {
-  
-  return [self.windows filterWith:^BOOL(SIWindow* window) {
-    return window.isVisible;
-  }];
-
-}
-
 -(SIWindow* _Nullable) focusedWindow {
 //  return self.visibleWindows.firstObject;
 // TMP
