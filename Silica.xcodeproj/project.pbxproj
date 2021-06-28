@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		404B0FFA1800EBE300309019 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 404B0FF91800EBE300309019 /* Carbon.framework */; };
 		4063AFDA17FB937A00E942E2 /* SISystemWideElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 4063AFD817FB937A00E942E2 /* SISystemWideElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4063AFDB17FB937A00E942E2 /* SISystemWideElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 4063AFD917FB937A00E942E2 /* SISystemWideElement.m */; };
 		40DF250819ABF7660069CEE6 /* CGSSpaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 40DF250719ABF7660069CEE6 /* CGSSpaces.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -64,7 +63,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				404B0FFA1800EBE300309019 /* Carbon.framework in Frameworks */,
 				942474E717DF695A00BF9B61 /* IOKit.framework in Frameworks */,
 				942474B917DF67D700BF9B61 /* Cocoa.framework in Frameworks */,
 			);

@@ -5,7 +5,6 @@
 
 #import "SIWindow.h"
 
-#import <Carbon/Carbon.h>
 #import "NSScreen+Silica.h"
 #import "SIApplication.h"
 #import "SISystemWideElement.h"
@@ -385,18 +384,19 @@
   if (!success) {
     return NO;
   }
-
-//  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-//  success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-//  if (!success) {
-//    return NO;
-//  }
   
-  // WORKAROUND as of big sur, the above does not activate frontmost window only.
-  ProcessSerialNumber pn = {};
-  GetProcessForPID(self.processIdentifier, &pn);
-  SetFrontProcessWithOptions(&pn, kSetFrontProcessFrontWindowOnly);
+  // https://github.com/ianyh/Silica/issues/13
+  AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
+  if (error != kAXErrorSuccess) {
+      return NO;
+  }
 
+  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+  success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+  if (!success) {
+    return NO;
+  }
+  
   return YES;
 }
 
