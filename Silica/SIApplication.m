@@ -126,15 +126,6 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   
   SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
   
-  // create the most specific si element type possible.
-  id role = siElement.role;
-  if ([role isEqual:(NSString *)kAXWindowRole]) {
-    siElement = [[SIWindow alloc] initWithAXElement:element];
-  }
-  else if ([role isEqual:(NSString *)kAXApplicationRole]) {
-    siElement = [[SIApplication alloc] initWithAXElement:element];
-  }
-  
   // guard against invalid / terminated pids.
   if (siElement.processIdentifier == 0) {
     NSLog(@"WARN no running application for element: %@", siElement);
