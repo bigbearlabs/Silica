@@ -91,13 +91,6 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
 
 
-/**
- *  Returns an array of SIWindow objects for all windows in the application that are currently visible.
- *
- *  @return An array of SIWindow objects for all windows in the application that are currently visible.
- */
-- (NSArray *)visibleWindows;
-
 
 -(SIWindow* _Nullable) focusedWindow;
 

@@ -18,7 +18,6 @@
 		40FC6AD417FA606A00856CE7 /* NSRunningApplication+Silica.h in Headers */ = {isa = PBXBuildFile; fileRef = 40FC6AD217FA606A00856CE7 /* NSRunningApplication+Silica.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		40FC6AD517FA606A00856CE7 /* NSRunningApplication+Silica.m in Sources */ = {isa = PBXBuildFile; fileRef = 40FC6AD317FA606A00856CE7 /* NSRunningApplication+Silica.m */; };
 		5109F3C71CC16EDC007E1D13 /* Silica.h in Headers */ = {isa = PBXBuildFile; fileRef = 942474C517DF67D700BF9B61 /* Silica.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		51DF49631E4E81CC00D1DCA5 /* BBLBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51DF49621E4E81CC00D1DCA5 /* BBLBasics.framework */; };
 		942474B917DF67D700BF9B61 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942474B817DF67D700BF9B61 /* Cocoa.framework */; };
 		942474C317DF67D700BF9B61 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 942474C117DF67D700BF9B61 /* InfoPlist.strings */; };
 		942474D217DF690700BF9B61 /* SIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 942474CE17DF690700BF9B61 /* SIWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -65,7 +64,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51DF49631E4E81CC00D1DCA5 /* BBLBasics.framework in Frameworks */,
 				404B0FFA1800EBE300309019 /* Carbon.framework in Frameworks */,
 				942474E717DF695A00BF9B61 /* IOKit.framework in Frameworks */,
 				942474B917DF67D700BF9B61 /* Cocoa.framework in Frameworks */,
