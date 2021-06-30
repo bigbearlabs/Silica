@@ -180,7 +180,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
     for (SIApplicationObservation *observation in self.elementToObservations[accessibilityElement]) {
-        if ([observation.notification isEqualToString:(__bridge NSString*) notification]) {
+        if ([observation.notification isEqual:(__bridge NSString*) notification]) {
             AXObserverRemoveNotification(self.observerRef, accessibilityElement.axElementRef, notification);
         }
     }
