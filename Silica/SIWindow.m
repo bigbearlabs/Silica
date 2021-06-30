@@ -84,7 +84,7 @@
     return (SIWindow*) element;
   }
   
-  if ([element.role isEqualToString:(__bridge NSString*)kAXWindowRole]) {
+  if ([element.role isEqual:(__bridge NSString*)kAXWindowRole]) {
     return [[SIWindow alloc] initWithAXElement:element.axElementRef];
   }
 
@@ -153,13 +153,13 @@
 - (BOOL)isNormalWindow {
     NSString *subrole = [self subrole];
     if (subrole) {
-        return [subrole isEqualToString:(__bridge NSString *)kAXStandardWindowSubrole];
+        return [subrole isEqual:(__bridge NSString *)kAXStandardWindowSubrole];
     }
     return YES;
 }
 
 - (BOOL)isSheet {
-    return [[self stringForKey:kAXRoleAttribute] isEqualToString:(__bridge NSString *)kAXSheetRole];
+    return [[self stringForKey:kAXRoleAttribute] isEqual:(__bridge NSString *)kAXSheetRole];
 }
 
 - (BOOL)isActive {
