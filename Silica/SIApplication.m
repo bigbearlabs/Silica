@@ -128,7 +128,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   
   // guard against invalid / terminated pids.
   if (siElement.processIdentifier == 0) {
-    NSLog(@"WARN no running application for element: %@", siElement);
+    NSLog(@"👺👺 no running application for element: %@", siElement);
     return;
   }
   
