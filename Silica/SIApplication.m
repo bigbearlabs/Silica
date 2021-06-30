@@ -148,7 +148,9 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   if (!self.observerRef) {
     AXObserverRef observerRef;
     AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
-    if (error != kAXErrorSuccess) return NO;
+    if (error != kAXErrorSuccess) {
+      return NO;
+    }
     
     // adding source to default mode results in problems with certain UI states (e.g. popup button opened),
     // so use common modes.
@@ -164,7 +166,9 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   
   AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, nil);
   
-  if (error != kAXErrorSuccess) return NO;
+  if (error != kAXErrorSuccess) {
+    return NO;
+  }
   
   if (!self.elementToObservations[accessibilityElement]) {
     self.elementToObservations[accessibilityElement] = [NSMutableArray array];
