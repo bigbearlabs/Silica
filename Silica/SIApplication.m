@@ -143,13 +143,13 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 }
 
 
-- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
+- (AXError)observeAxNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
   
   if (!self.observerRef) {
     AXObserverRef observerRef;
     AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
     if (error != kAXErrorSuccess) {
-      return NO;
+      return error;
     }
     
     // adding source to default mode results in problems with certain UI states (e.g. popup button opened),
@@ -167,7 +167,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, nil);
   
   if (error != kAXErrorSuccess) {
-    return NO;
+    return error;
   }
   
   if (!self.elementToObservations[accessibilityElement]) {
@@ -175,7 +175,7 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   }
   [self.elementToObservations[accessibilityElement] addObject:observation];
   
-  return YES;
+  return kAXErrorSuccess;
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
