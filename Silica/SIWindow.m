@@ -168,25 +168,6 @@
     return YES;
 }
 
-- (BOOL)isOnScreen {
-    if (!self.isActive) {
-        return NO;
-    }
-    
-    CFArrayRef windowDescriptions = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
-    BOOL isActive = NO;
-    for (NSDictionary *dictionary in (__bridge NSArray *)windowDescriptions) {
-        CGWindowID otherWindowID = [dictionary[(__bridge NSString *)kCGWindowNumber] intValue];
-        if (otherWindowID == self.windowID) {
-            isActive = YES;
-            break;
-        }
-    }
-    
-    CFRelease(windowDescriptions);
-    
-    return isActive;
-}
 
 -(BOOL) isVisible {
   return
