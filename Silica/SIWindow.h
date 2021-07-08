@@ -129,12 +129,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (BOOL)isActive;
 
-/**
- *  Returns a BOOL indicating whether or not the window is on screen.
- *
- *  @return YES if the window is on screen and NO otherwise.
- */
-- (BOOL)isOnScreen;
 
 
 - (BOOL)isVisible;
