@@ -148,7 +148,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return A SIAccessibilityElement instance which is the focused element in the element hierarchy.
  */
--(SIAccessibilityElement*) focusedElement;
+-(nullable SIAccessibilityElement*) focusedElement;
 
 /**
  *  Returns an array of children AXUIElementRef objects.
