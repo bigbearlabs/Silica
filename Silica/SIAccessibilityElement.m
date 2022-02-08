@@ -33,7 +33,11 @@
 #pragma mark NSObject
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"%@ <Title: %@> pid: %d, %@/%@", super.description, self.title, self.processIdentifier, self.role, self.subrole];
+    return [NSString stringWithFormat:@"%@ <Title: %@> pid: %d, %@/%@ %@", super.description, self.title, self.processIdentifier, self.role, self.subrole,
+            (self.title == nil || self.title.length == 0) ?
+              [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier].bundleIdentifier
+              : @""
+    ];
 }
 
 - (BOOL)isEqual:(id)object {
