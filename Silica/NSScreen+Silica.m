@@ -30,6 +30,8 @@
     return f;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (BOOL)rotateTo:(int)degrees {
     int rotation = kIOScaleRotate0;
 
@@ -57,6 +59,7 @@
 
     return YES;
 }
+#pragma GCC diagnostic pop
 
 - (NSScreen *)nextScreen {
     NSArray *screens = [NSScreen screens];
