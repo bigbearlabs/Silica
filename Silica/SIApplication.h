@@ -3,8 +3,8 @@
 //  Silica
 //
 
-#import "SIAccessibilityElement.h"
-#import "SIWindow.h"
+#import <Silica/SIAccessibilityElement.h>
+#import <Silica/SIWindow.h>
 
 
 
@@ -76,9 +76,8 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  *
  *  @param notification         The notification to register a handler for.
  *  @param accessibilityElement The accessibility element associated with the notification. Must be an element owned by the application or the application itself.
- *  @return YES if adding the observer succeeded, NO otherwise
  */
-- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
+- (AXError)observeAxNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
 
 /**
  *  Unregisters a notification handler for an accessibility notification.
@@ -90,13 +89,6 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
  */
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement;
 
-
-/**
- *  Returns an array of SIWindow objects for all windows in the application that are currently visible.
- *
- *  @return An array of SIWindow objects for all windows in the application that are currently visible.
- */
-- (NSArray *)visibleWindows;
 
 
 -(SIWindow* _Nullable) focusedWindow;
@@ -142,7 +134,7 @@ typedef void (^SIAXNotificationHandler)(SIAccessibilityElement *accessibilityEle
 - (void)dropWindowsCache;
 
 
--(NSRunningApplication*) runningApplication;
+-(nullable NSRunningApplication*) runningApplication;
 
 
 @end

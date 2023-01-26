@@ -8,7 +8,6 @@
 #import "SIWindow.h"
 #import "SIUniversalAccessHelper.h"
 #import "SISystemWideElement.h"
-#import <BBLBasics/BBLBasics.h>
 
 
 
@@ -46,6 +45,10 @@
 // so, beware that SIApplications which act as observers need to be well-managed by the caller.
 + (instancetype)applicationWithRunningApplication:(NSRunningApplication *)runningApplication {
   @autoreleasepool {
+    if (runningApplication == nil) {
+      return nil;
+    }
+    
     AXUIElementRef axElementRef = AXUIElementCreateApplication(runningApplication.processIdentifier);
     if (axElementRef) {
       id path = runningApplication.bundleURL;
@@ -123,18 +126,9 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   
   SIAccessibilityElement *siElement =  [[SIAccessibilityElement alloc] initWithAXElement:element];
   
-  // create the most specific si element type possible.
-  id role = siElement.role;
-  if ([role isEqual:(NSString *)kAXWindowRole]) {
-    siElement = [[SIWindow alloc] initWithAXElement:element];
-  }
-  else if ([role isEqual:(NSString *)kAXApplicationRole]) {
-    siElement = [[SIApplication alloc] initWithAXElement:element];
-  }
-  
   // guard against invalid / terminated pids.
   if (siElement.processIdentifier == 0) {
-    NSLog(@"WARN no running application for element: %@", siElement);
+    NSLog(@"👺👺 no running application for element: %@", siElement);
     return;
   }
   
@@ -149,15 +143,19 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
 }
 
 
-- (BOOL)observeNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
+- (AXError)observeAxNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
   
   if (!self.observerRef) {
     AXObserverRef observerRef;
     AXError error = AXObserverCreateWithInfoCallback(self.processIdentifier, &observerCallback, &observerRef);
-    if (error != kAXErrorSuccess) return NO;
+    if (error != kAXErrorSuccess) {
+      return error;
+    }
     
-    CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopDefaultMode);
-    
+    // adding source to default mode results in problems with certain UI states (e.g. popup button opened),
+    // so use common modes.
+    CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observerRef), kCFRunLoopCommonModes);
+
     self.observerRef = observerRef;
     self.elementToObservations = [NSMutableDictionary dictionaryWithCapacity:1];
   }
@@ -168,19 +166,21 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
   
   AXError error = AXObserverAddNotification(self.observerRef, accessibilityElement.axElementRef, notification, nil);
   
-  if (error != kAXErrorSuccess) return NO;
+  if (error != kAXErrorSuccess) {
+    return error;
+  }
   
   if (!self.elementToObservations[accessibilityElement]) {
     self.elementToObservations[accessibilityElement] = [NSMutableArray array];
   }
   [self.elementToObservations[accessibilityElement] addObject:observation];
   
-  return YES;
+  return kAXErrorSuccess;
 }
 
 - (void)unobserveNotification:(CFStringRef)notification withElement:(SIAccessibilityElement *)accessibilityElement {
     for (SIApplicationObservation *observation in self.elementToObservations[accessibilityElement]) {
-        if ([observation.notification isEqualToString:(__bridge NSString*) notification]) {
+        if ([observation.notification isEqual:(__bridge NSString*) notification]) {
             AXObserverRemoveNotification(self.observerRef, accessibilityElement.axElementRef, notification);
         }
     }
@@ -203,14 +203,6 @@ void observerCallback(AXObserverRef observer, AXUIElementRef element, CFStringRe
     }
     return self.cachedWindows;
   }
-}
-
-- (NSArray *)visibleWindows {
-  
-  return [self.windows filterWith:^BOOL(SIWindow* window) {
-    return window.isVisible;
-  }];
-
 }
 
 -(SIWindow* _Nullable) focusedWindow {

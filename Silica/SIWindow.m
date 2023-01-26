@@ -5,11 +5,12 @@
 
 #import "SIWindow.h"
 
-#import <Carbon/Carbon.h>
 #import "NSScreen+Silica.h"
 #import "SIApplication.h"
 #import "SISystemWideElement.h"
 #import "SIUniversalAccessHelper.h"
+#import <ApplicationServices/ApplicationServices.h>
+
 
 @interface SIWindow ()
 @property (nonatomic, assign) CGWindowID _windowID;
@@ -83,7 +84,7 @@
     return (SIWindow*) element;
   }
   
-  if ([element.role isEqualToString:(__bridge NSString*)kAXWindowRole]) {
+  if ([element.role isEqual:(__bridge NSString*)kAXWindowRole]) {
     return [[SIWindow alloc] initWithAXElement:element.axElementRef];
   }
 
@@ -152,13 +153,13 @@
 - (BOOL)isNormalWindow {
     NSString *subrole = [self subrole];
     if (subrole) {
-        return [subrole isEqualToString:(__bridge NSString *)kAXStandardWindowSubrole];
+        return [subrole isEqual:(__bridge NSString *)kAXStandardWindowSubrole];
     }
     return YES;
 }
 
 - (BOOL)isSheet {
-    return [[self stringForKey:kAXRoleAttribute] isEqualToString:(__bridge NSString *)kAXSheetRole];
+    return [[self stringForKey:kAXRoleAttribute] isEqual:(__bridge NSString *)kAXSheetRole];
 }
 
 - (BOOL)isActive {
@@ -167,25 +168,6 @@
     return YES;
 }
 
-- (BOOL)isOnScreen {
-    if (!self.isActive) {
-        return NO;
-    }
-    
-    CFArrayRef windowDescriptions = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly, kCGNullWindowID);
-    BOOL isActive = NO;
-    for (NSDictionary *dictionary in (__bridge NSArray *)windowDescriptions) {
-        CGWindowID otherWindowID = [dictionary[(__bridge NSString *)kCGWindowNumber] intValue];
-        if (otherWindowID == self.windowID) {
-            isActive = YES;
-            break;
-        }
-    }
-    
-    CFRelease(windowDescriptions);
-    
-    return isActive;
-}
 
 -(BOOL) isVisible {
   return
@@ -361,6 +343,7 @@
 
 #pragma mark Window Focus
 
+// NOTE activates all windows of this app.
 - (BOOL)focusWindow {
     NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
     BOOL success = [runningApplication activateWithOptions:NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps];
@@ -368,9 +351,9 @@
         return NO;
     }
 
-    AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
-    if (error != kAXErrorSuccess) {
-        return NO;
+    success = [self raise];
+    if (!success) {
+      return NO;
     }
 
     return YES;
@@ -378,17 +361,32 @@
 
 -(BOOL)focusOnlyThisWindow {
 
-  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
-  BOOL success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+  BOOL success = [self raise];
   if (!success) {
     return NO;
   }
   
+  // https://github.com/ianyh/Silica/issues/13
+  AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
+  if (error != kAXErrorSuccess) {
+      return NO;
+  }
+
+  NSRunningApplication *runningApplication = [NSRunningApplication runningApplicationWithProcessIdentifier:self.processIdentifier];
+  success = [runningApplication activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+  if (!success) {
+    return NO;
+  }
+  
+  return YES;
+}
+
+-(BOOL)raise {
   AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
   if (error != kAXErrorSuccess) {
     return NO;
   }
-  
+
   return YES;
 }
 

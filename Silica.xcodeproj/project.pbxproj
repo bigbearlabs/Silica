@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		404B0FFA1800EBE300309019 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 404B0FF91800EBE300309019 /* Carbon.framework */; };
 		4063AFDA17FB937A00E942E2 /* SISystemWideElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 4063AFD817FB937A00E942E2 /* SISystemWideElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4063AFDB17FB937A00E942E2 /* SISystemWideElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 4063AFD917FB937A00E942E2 /* SISystemWideElement.m */; };
 		40DF250819ABF7660069CEE6 /* CGSSpaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 40DF250719ABF7660069CEE6 /* CGSSpaces.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -18,7 +17,6 @@
 		40FC6AD417FA606A00856CE7 /* NSRunningApplication+Silica.h in Headers */ = {isa = PBXBuildFile; fileRef = 40FC6AD217FA606A00856CE7 /* NSRunningApplication+Silica.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		40FC6AD517FA606A00856CE7 /* NSRunningApplication+Silica.m in Sources */ = {isa = PBXBuildFile; fileRef = 40FC6AD317FA606A00856CE7 /* NSRunningApplication+Silica.m */; };
 		5109F3C71CC16EDC007E1D13 /* Silica.h in Headers */ = {isa = PBXBuildFile; fileRef = 942474C517DF67D700BF9B61 /* Silica.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		51DF49631E4E81CC00D1DCA5 /* BBLBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51DF49621E4E81CC00D1DCA5 /* BBLBasics.framework */; };
 		942474B917DF67D700BF9B61 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 942474B817DF67D700BF9B61 /* Cocoa.framework */; };
 		942474C317DF67D700BF9B61 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 942474C117DF67D700BF9B61 /* InfoPlist.strings */; };
 		942474D217DF690700BF9B61 /* SIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 942474CE17DF690700BF9B61 /* SIWindow.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -65,8 +63,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51DF49631E4E81CC00D1DCA5 /* BBLBasics.framework in Frameworks */,
-				404B0FFA1800EBE300309019 /* Carbon.framework in Frameworks */,
 				942474E717DF695A00BF9B61 /* IOKit.framework in Frameworks */,
 				942474B917DF67D700BF9B61 /* Cocoa.framework in Frameworks */,
 			);
@@ -212,8 +208,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 1410;
 				ORGANIZATIONNAME = SiO2;
+				TargetAttributes = {
+					942474B417DF67D700BF9B61 = {
+						DevelopmentTeam = XK44TD8U4S;
+					};
+				};
 			};
 			buildConfigurationList = 942474AF17DF67D700BF9B61 /* Build configuration list for PBXProject "Silica" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -293,12 +294,14 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -319,7 +322,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -345,12 +348,14 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -364,7 +369,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -373,8 +378,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = XK44TD8U4S;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -383,6 +391,7 @@
 				GCC_PREFIX_HEADER = "Silica/Silica-Prefix.pch";
 				INFOPLIST_FILE = "Silica/Silica-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.sio2.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -395,8 +404,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = XK44TD8U4S;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -405,6 +417,7 @@
 				GCC_PREFIX_HEADER = "Silica/Silica-Prefix.pch";
 				INFOPLIST_FILE = "Silica/Silica-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.sio2.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
