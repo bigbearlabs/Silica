@@ -56,3 +56,6 @@ extern void CGSHideSpaces(const CGSConnectionID cid, NSArray *spaces);
 extern void CGSShowSpaces(const CGSConnectionID cid, NSArray *spaces);
 
 extern AXError _AXUIElementGetWindow(AXUIElementRef element, CGWindowID *idOut);
+
+
+extern void CGSMoveWindowsToManagedSpace(CGSConnectionID connection, CFArrayRef windowIds, CGSSpace SpaceId);
