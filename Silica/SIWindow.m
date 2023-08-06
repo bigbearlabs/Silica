@@ -382,7 +382,7 @@
 }
 
 -(BOOL)raise {
-  AXError error = AXUIElementSetAttributeValue(self.axElementRef, (CFStringRef)NSAccessibilityMainAttribute, kCFBooleanTrue);
+  AXError error = AXUIElementPerformAction(self.axElementRef, kAXRaiseAction);
   if (error != kAXErrorSuccess) {
     return NO;
   }
