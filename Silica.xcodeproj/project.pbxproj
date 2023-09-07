@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		4063AFDA17FB937A00E942E2 /* SISystemWideElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 4063AFD817FB937A00E942E2 /* SISystemWideElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4063AFDB17FB937A00E942E2 /* SISystemWideElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 4063AFD917FB937A00E942E2 /* SISystemWideElement.m */; };
-		40DF250819ABF7660069CEE6 /* CGSSpaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 40DF250719ABF7660069CEE6 /* CGSSpaces.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		40DF250819ABF7660069CEE6 /* CGSSpaces.h in Headers */ = {isa = PBXBuildFile; fileRef = 40DF250719ABF7660069CEE6 /* CGSSpaces.h */; };
 		40FC6ACC17FA599C00856CE7 /* SIApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 40FC6ACA17FA599C00856CE7 /* SIApplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		40FC6ACD17FA599C00856CE7 /* SIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 40FC6ACB17FA599C00856CE7 /* SIApplication.m */; };
 		40FC6AD017FA5A1B00856CE7 /* SIAccessibilityElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 40FC6ACE17FA5A1B00856CE7 /* SIAccessibilityElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
